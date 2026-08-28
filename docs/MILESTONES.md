@@ -1,0 +1,102 @@
+# Stackmynd — Project Milestones & Implementation Schedule
+
+This document tracks the phased implementation milestones, acceptance criteria, deliverables, and completion status for **Stackmynd** (Local-First Multi-Workspace Block-Level Markdown Knowledge Base).
+
+---
+
+## Milestone Progress Summary
+
+| Milestone | Scope | Target Version | Status |
+| :--- | :--- | :--- | :--- |
+| **M1** | Project Scaffolding & Foundational Architecture | `v0.1.0` | ✅ Completed |
+| **M2** | Workspace Management, Atomic File I/O & Watcher Engine | `v0.2.0` | ⚪ Not Started |
+| **M3** | SQLite Ephemeral Index Layer & Schema Migrations | `v0.3.0` | ⚪ Not Started |
+| **M4** | Markdown Lexer, Block Slicer & Link Repair Engine | `v0.4.0` | ⚪ Not Started |
+| **M5** | Native Tantivy Full-Text Search Engine | `v0.5.0` | ⚪ Not Started |
+| **M6** | 5-Area Spatial Grid & Navigation Shell | `v0.6.0` | ⚪ Not Started |
+| **M7** | Tri-Mode Editor & Synchronized Split View | `v0.7.0` | ⚪ Not Started |
+| **M8** | Right Side Panel Inspector & Block Knowledge Graph | `v0.8.0` | ⚪ Not Started |
+| **M9** | Search Command Palette, E2E Integration & Verification | `v1.0.0` | ⚪ Not Started |
+
+---
+
+## Detailed Milestone Specifications
+
+### Milestone 1: Project Scaffolding & Foundational Architecture
+- **Status:** ✅ Completed
+- **Key Deliverables:**
+  - [x] SolidJS + Vite 6 + Tailwind CSS v4 frontend foundation.
+  - [x] TypeScript strict mode configuration and path aliases (`@/*`).
+  - [x] Tauri v2 configuration (`tauri.conf.json`, `capabilities/default.json`) with frameless custom window.
+  - [x] Rust core backend scaffolding (`src-tauri/src/main.rs`, `src-tauri/src/lib.rs`, `Cargo.toml`).
+  - [x] Basic IPC handshake (`ping` command) and verification tests.
+
+### Milestone 2: Workspace Management, Atomic File I/O & Watcher Engine
+- **Status:** ⚪ Not Started
+- **Key Deliverables:**
+  - [ ] Multi-workspace registration, root path validation, and `.stackmynd/` provisioning (`workspace.json`, `session.json`, `trash/`).
+  - [ ] Atomic file write engine (`.filename.tmp.<uuid>` -> `fsync` -> atomic rename).
+  - [ ] File system watcher (`notify-debouncer-mini`) with 1500ms Blake3 Self-Write Suppression Registry.
+  - [ ] Tauri IPC commands: `open_workspace`, `create_workspace`, `list_workspaces`, `read_directory`, `read_file`, `write_file_atomic`, `delete_to_trash`, `restore_from_trash`.
+  - [ ] Typed TypeScript IPC wrappers (`src/lib/tauri/commands.ts`, `events.ts`).
+
+### Milestone 3: SQLite Ephemeral Index Layer & Schema Migrations
+- **Status:** ⚪ Not Started
+- **Key Deliverables:**
+  - [ ] Embedded SQLite engine with WAL mode and pragmas (`journal_mode = WAL`, `synchronous = NORMAL`, `foreign_keys = ON`).
+  - [ ] Table schema migrations: `workspaces`, `files`, `blocks`, `links`, `tags`, `file_tags`, `block_tags`, `recycle_bin`.
+  - [ ] Incremental synchronization engine with Blake3 hash checks and diff updates.
+  - [ ] Full workspace rebuild pipeline with atomic database swap (`index.db.rebuild` -> `index.db`).
+
+### Milestone 4: Markdown Lexer, Block Slicer & Link Repair Engine
+- **Status:** ⚪ Not Started
+- **Key Deliverables:**
+  - [ ] Semantic block parser partitioning notes into discrete blocks (headings, paragraphs, lists, quotes, tables, code, math).
+  - [ ] Deterministic `^bk-xxxx` block ID generator, validator, and anchor insertion.
+  - [ ] Roundtrip YAML frontmatter parser preserving comments, order, and indentation.
+  - [ ] Bi-directional link extractor (`[[note]]`, `[[note#^blockid]]`, standard links, `#tags`).
+  - [ ] Global Link Repair Engine updating all inbound wikilinks upon file/folder rename or move.
+
+### Milestone 5: Native Tantivy Full-Text Search Engine
+- **Status:** ⚪ Not Started
+- **Key Deliverables:**
+  - [ ] Tantivy schema and index engine located at `.stackmynd/search_index/`.
+  - [ ] Background indexing queue worker with debounced segment commits.
+  - [ ] Query parser supporting boolean operators (`AND`, `OR`, `NOT`) and field scopes (`title:`, `path:`, `tag:`, `block:`).
+  - [ ] BM25 relevance ranking with boosting: title (3.0x), headings (2.2x), tags (2.0x), body (1.0x).
+
+### Milestone 6: 5-Area Spatial Grid & Navigation Shell
+- **Status:** ⚪ Not Started
+- **Key Deliverables:**
+  - [ ] Area 1: Custom Top Title Bar (traffic lights / window controls, workspace dropdown, view mode controls, search trigger, theme toggle).
+  - [ ] Area 2: Left Resizable/Collapsible Sidebar (workspace switcher, new note/folder actions, virtualized file tree, trash anchor).
+  - [ ] Area 3: Central Main Tab Strip (multi-tabs, dirty badges, close buttons, middle-click close, breadcrumbs).
+  - [ ] Area 5: Bottom Status Bar (workspace status, indexing indicator, word count, block count, cursor line/col, save status).
+  - [ ] Resizable splitter dividers with snapping and keyboard shortcuts (`Cmd+B`, `Cmd+Shift+B`).
+  - [ ] Session layout persistence in `.stackmynd/session.json`.
+
+### Milestone 7: Tri-Mode Editor & Synchronized Split View
+- **Status:** ⚪ Not Started
+- **Key Deliverables:**
+  - [ ] Mode 1: Source Mode (monospaced editor, line numbers, visible frontmatter & `^bk-xxxx` anchors).
+  - [ ] Mode 2: Preview Mode (rendered typography, hidden `^bk-xxxx` anchors with `data-block-id`, KaTeX math, Mermaid diagrams with error boundaries).
+  - [ ] Mode 3: Sync Split Mode (dual-pane view with line-proportional synchronized scrolling).
+  - [ ] 800ms debounced auto-save engine + manual `Cmd+S` / `Ctrl+S` force save.
+  - [ ] External modification detection & 3-way conflict resolution banner.
+
+### Milestone 8: Right Side Panel Inspector & Block Knowledge Graph
+- **Status:** ⚪ Not Started
+- **Key Deliverables:**
+  - [ ] Tab 1: Metadata Panel (visual frontmatter form for text, number, boolean, tags, date, lists; bidirectional sync).
+  - [ ] Tab 2: Outlinks Panel (forward notes, blocks, external URLs, broken link badges).
+  - [ ] Tab 3: Backlinks Panel (linked mentions with contextual snippets; unlinked mentions with "+ Link" button).
+  - [ ] Tab 4: Block Outline Panel (hierarchical heading tree, block anchor badges, click-to-jump, copy reference, active block scrollspy).
+  - [ ] Hover popover preview cards (300ms delay) and smooth animated scroll jumps.
+
+### Milestone 9: Search Command Palette, E2E Integration & Verification
+- **Status:** ⚪ Not Started
+- **Key Deliverables:**
+  - [ ] Global Command Palette (`Cmd+K` / `Ctrl+K`): quick search across titles, contents, blocks, and tags.
+  - [ ] End-to-end multi-workspace switching and local recycle bin restore/purge.
+  - [ ] Complete test suite execution (`cargo test`, `cargo clippy`, `pnpm tsc --noEmit`, `pnpm test`, `pnpm build`).
+  - [ ] Final documentation update and acceptance verification.
