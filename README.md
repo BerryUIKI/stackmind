@@ -45,6 +45,22 @@ All architecture, product specifications, UI behaviors, and data flows are fully
 
 ---
 
+## Contributing & Agent Guidelines
+
+- [AGENTS.md](AGENTS.md) — Comprehensive guidelines, architectural mental model, constraints, and implementation protocols for AI coding agents and autonomous assistants.
+- [CONTRIBUTING.md](CONTRIBUTING.md) — Contributor onboarding, toolchain setup, development workflow, and PR conventions.
+
+---
+
+## Git Branching & Protection Strategy
+
+- **`main`**: Protected branch reserved strictly for verified, stable releases. Direct pushes or commits to `main` are prohibited.
+- **`dev`**: Active integration branch. All development is restricted to the `dev` branch ecosystem.
+- **Feature Branches (`feature/*`, `fix/*`, `docs/*`)**: All development work must take place on dedicated feature branches branched from `dev`. Once a feature is complete and verified, merge into `dev` and delete the feature branch.
+- **Rapid Iteration Phase**: Contributors and agents are permitted to self-merge their PRs into `dev`. Branch protection for `dev` will be enabled after MVP acceptance.
+
+---
+
 ## License
 
 This project is licensed under the terms of the [GNU General Public License v3.0 (GPL-3.0)](LICENSE).
