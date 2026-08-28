@@ -9,7 +9,7 @@ This document tracks the phased implementation milestones, acceptance criteria, 
 | Milestone | Scope | Target Version | Status |
 | :--- | :--- | :--- | :--- |
 | **M1** | Project Scaffolding & Foundational Architecture | `v0.1.0` | ✅ Completed |
-| **M2** | Workspace Management, Atomic File I/O & Watcher Engine | `v0.2.0` | ⚪ Not Started |
+| **M2** | Workspace Management, Atomic File I/O & Watcher Engine | `v0.2.0` | ✅ Completed |
 | **M3** | SQLite Ephemeral Index Layer & Schema Migrations | `v0.3.0` | ⚪ Not Started |
 | **M4** | Markdown Lexer, Block Slicer & Link Repair Engine | `v0.4.0` | ⚪ Not Started |
 | **M5** | Native Tantivy Full-Text Search Engine | `v0.5.0` | ⚪ Not Started |
@@ -32,13 +32,13 @@ This document tracks the phased implementation milestones, acceptance criteria, 
   - [x] Basic IPC handshake (`ping` command) and verification tests.
 
 ### Milestone 2: Workspace Management, Atomic File I/O & Watcher Engine
-- **Status:** ⚪ Not Started
+- **Status:** ✅ Completed
 - **Key Deliverables:**
-  - [ ] Multi-workspace registration, root path validation, and `.stackmynd/` provisioning (`workspace.json`, `session.json`, `trash/`).
-  - [ ] Atomic file write engine (`.filename.tmp.<uuid>` -> `fsync` -> atomic rename).
-  - [ ] File system watcher (`notify-debouncer-mini`) with 1500ms Blake3 Self-Write Suppression Registry.
-  - [ ] Tauri IPC commands: `open_workspace`, `create_workspace`, `list_workspaces`, `read_directory`, `read_file`, `write_file_atomic`, `delete_to_trash`, `restore_from_trash`.
-  - [ ] Typed TypeScript IPC wrappers (`src/lib/tauri/commands.ts`, `events.ts`).
+  - [x] Multi-workspace registration, root path validation, and `.stackmynd/` provisioning (`workspace.json`, `session.json`, `trash/`).
+  - [x] Atomic file write engine (`.filename.tmp.<uuid>` -> `fsync` -> atomic rename).
+  - [x] File system watcher (`notify-debouncer-mini`) with 1500ms Blake3 Self-Write Suppression Registry.
+  - [x] Tauri IPC commands: `open_workspace`, `create_workspace`, `list_workspaces`, `read_directory`, `read_file`, `write_file_atomic`, `delete_to_trash`, `restore_from_trash`.
+  - [x] Typed TypeScript IPC wrappers (`src/lib/tauri/commands.ts`, `events.ts`).
 
 ### Milestone 3: SQLite Ephemeral Index Layer & Schema Migrations
 - **Status:** ⚪ Not Started

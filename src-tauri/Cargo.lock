@@ -3752,6 +3752,7 @@ version = "0.1.0"
 dependencies = [
  "blake3",
  "chrono",
+ "dirs",
  "notify",
  "notify-debouncer-mini",
  "pulldown-cmark",
@@ -3767,6 +3768,7 @@ dependencies = [
  "tauri-plugin-fs",
  "tauri-plugin-opener",
  "tauri-plugin-shell",
+ "tempfile",
  "thiserror 2.0.20",
  "tokio",
  "uuid",
