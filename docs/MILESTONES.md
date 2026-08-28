@@ -15,7 +15,7 @@ This document tracks the phased implementation milestones, acceptance criteria, 
 | **M5** | Native Tantivy Full-Text Search Engine | `v0.5.0` | ✅ Completed |
 | **M6** | 5-Area Spatial Grid & Navigation Shell | `v0.6.0` | ✅ Completed |
 | **M7** | Tri-Mode Editor & Synchronized Split View | `v0.7.0` | ✅ Completed |
-| **M8** | Right Side Panel Inspector & Block Knowledge Graph | `v0.8.0` | ⚪ Not Started |
+| **M8** | Right Side Panel Inspector & Block Knowledge Graph | `v0.8.0` | ✅ Completed |
 | **M9** | Search Command Palette, E2E Integration & Verification | `v1.0.0` | ⚪ Not Started |
 
 ---
@@ -85,13 +85,13 @@ This document tracks the phased implementation milestones, acceptance criteria, 
   - [x] External modification detection & 3-way conflict resolution banner.
 
 ### Milestone 8: Right Side Panel Inspector & Block Knowledge Graph
-- **Status:** ⚪ Not Started
+- **Status:** ✅ Completed
 - **Key Deliverables:**
-  - [ ] Tab 1: Metadata Panel (visual frontmatter form for text, number, boolean, tags, date, lists; bidirectional sync).
-  - [ ] Tab 2: Outlinks Panel (forward notes, blocks, external URLs, broken link badges).
-  - [ ] Tab 3: Backlinks Panel (linked mentions with contextual snippets; unlinked mentions with "+ Link" button).
-  - [ ] Tab 4: Block Outline Panel (hierarchical heading tree, block anchor badges, click-to-jump, copy reference, active block scrollspy).
-  - [ ] Hover popover preview cards (300ms delay) and smooth animated scroll jumps.
+  - [x] Tab 1: Metadata Panel (visual frontmatter form for text, number, boolean, tags, date, lists; bidirectional sync).
+  - [x] Tab 2: Outlinks Panel (forward notes, blocks, external URLs, broken link badges).
+  - [x] Tab 3: Backlinks Panel (linked mentions with contextual snippets; unlinked mentions with "+ Link" button).
+  - [x] Tab 4: Block Outline Panel (hierarchical heading tree, block anchor badges, click-to-jump, copy reference, active block scrollspy).
+  - [x] Hover popover preview cards (300ms delay) and smooth animated scroll jumps.
 
 ### Milestone 9: Search Command Palette, E2E Integration & Verification
 - **Status:** ⚪ Not Started

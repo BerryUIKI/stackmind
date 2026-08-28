@@ -1,6 +1,10 @@
 import { Component, Show } from "solid-js";
 import { uiStore, InspectorTab } from "@/store/ui";
 import { tabsStore } from "@/store/tabs";
+import { MetadataPanel } from "@/components/inspector/MetadataPanel";
+import { OutlinksPanel } from "@/components/inspector/OutlinksPanel";
+import { BacklinksPanel } from "@/components/inspector/BacklinksPanel";
+import { OutlinePanel } from "@/components/inspector/OutlinePanel";
 
 export const Inspector: Component = () => {
   const currentTab = () => tabsStore.getActiveTab();
@@ -73,47 +77,19 @@ export const Inspector: Component = () => {
             </div>
 
             <Show when={uiStore.inspectorTab() === "metadata"}>
-              <div class="space-y-2">
-                <span class="text-[10px] font-bold uppercase tracking-wider text-[var(--color-text-muted)]">
-                  Properties & Frontmatter
-                </span>
-                <div class="p-2 rounded bg-[var(--color-bg-secondary)] border border-[var(--color-border)] text-[var(--color-text-secondary)]">
-                  YAML frontmatter sync active.
-                </div>
-              </div>
+              <MetadataPanel />
             </Show>
 
             <Show when={uiStore.inspectorTab() === "outlinks"}>
-              <div class="space-y-2">
-                <span class="text-[10px] font-bold uppercase tracking-wider text-[var(--color-text-muted)]">
-                  Outbound Links
-                </span>
-                <div class="p-2 rounded bg-[var(--color-bg-secondary)] border border-[var(--color-border)] text-[var(--color-text-secondary)]">
-                  Scanning outbound links...
-                </div>
-              </div>
+              <OutlinksPanel />
             </Show>
 
             <Show when={uiStore.inspectorTab() === "backlinks"}>
-              <div class="space-y-2">
-                <span class="text-[10px] font-bold uppercase tracking-wider text-[var(--color-text-muted)]">
-                  Inbound Backlinks
-                </span>
-                <div class="p-2 rounded bg-[var(--color-bg-secondary)] border border-[var(--color-border)] text-[var(--color-text-secondary)]">
-                  Searching referencing notes...
-                </div>
-              </div>
+              <BacklinksPanel />
             </Show>
 
             <Show when={uiStore.inspectorTab() === "outline"}>
-              <div class="space-y-2">
-                <span class="text-[10px] font-bold uppercase tracking-wider text-[var(--color-text-muted)]">
-                  Block Structure Outline
-                </span>
-                <div class="p-2 rounded bg-[var(--color-bg-secondary)] border border-[var(--color-border)] text-[var(--color-text-secondary)]">
-                  Hierarchical outline tracking...
-                </div>
-              </div>
+              <OutlinePanel />
             </Show>
           </div>
         </Show>
