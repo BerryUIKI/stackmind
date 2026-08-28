@@ -1,19 +1,152 @@
-import { Component, Show } from "solid-js";
+import { Component, Show, createSignal, onMount } from "solid-js";
+import { getCurrentWindow } from "@tauri-apps/api/window";
 import { uiStore, EditorMode } from "@/store/ui";
 import { workspaceStore } from "@/store/workspace";
 
 export const TitleBar: Component = () => {
   const currentWorkspace = () => workspaceStore.activeWorkspace();
+  const [isMacPlatform, setIsMacPlatform] = createSignal(true);
+  const [isMaximized, setIsMaximized] = createSignal(false);
+
+  const getAppWindow = () => {
+    try {
+      return getCurrentWindow();
+    } catch {
+      return null;
+    }
+  };
+
+  onMount(async () => {
+    if (typeof navigator !== "undefined") {
+      const ua = navigator.userAgent.toLowerCase();
+      const plat =
+        (navigator as any).userAgentData?.platform?.toLowerCase() ||
+        navigator.platform?.toLowerCase() ||
+        "";
+      setIsMacPlatform(ua.includes("mac") || plat.includes("mac"));
+    }
+
+    const win = getAppWindow();
+    if (win) {
+      try {
+        const max = await win.isMaximized();
+        setIsMaximized(max);
+        win.onResized(async () => {
+          try {
+            setIsMaximized(await win.isMaximized());
+          } catch {
+            // ignore
+          }
+        });
+      } catch {
+        // ignore in test
+      }
+    }
+  });
+
+  const handleClose = async (e: MouseEvent) => {
+    e.stopPropagation();
+    const win = getAppWindow();
+    if (win) {
+      await win.close();
+    }
+  };
+
+  const handleMinimize = async (e: MouseEvent) => {
+    e.stopPropagation();
+    const win = getAppWindow();
+    if (win) {
+      await win.minimize();
+    }
+  };
+
+  const handleToggleMaximize = async (e?: MouseEvent) => {
+    if (e) e.stopPropagation();
+    const win = getAppWindow();
+    if (win) {
+      await win.toggleMaximize();
+      try {
+        setIsMaximized(await win.isMaximized());
+      } catch {
+        // ignore
+      }
+    }
+  };
 
   return (
     <header
       data-tauri-drag-region
-      class="h-[38px] min-h-[38px] w-full flex items-center justify-between px-3 select-none border-b border-[var(--color-border)] bg-[var(--color-bg-sidebar)] z-50 text-xs text-[var(--color-text-muted)]"
+      onDblClick={(e) => {
+        if ((e.target as HTMLElement).getAttribute("data-tauri-drag-region") !== null) {
+          handleToggleMaximize();
+        }
+      }}
+      class="h-[38px] min-h-[38px] w-full flex items-center justify-between pl-3 pr-0 select-none border-b border-[var(--color-border)] bg-[var(--color-bg-sidebar)] z-50 text-xs text-[var(--color-text-muted)]"
     >
-      {/* Left section: App Brand & Workspace Selector */}
-      <div class="flex items-center space-x-2" data-tauri-drag-region>
-        {/* MacOS traffic light reserve */}
-        <div class="w-16 h-full flex items-center pl-1 font-semibold text-xs tracking-wider text-[var(--color-text-primary)]">
+      {/* Left section: Window Controls (macOS) + Brand & Workspace Selector */}
+      <div class="flex items-center space-x-2.5" data-tauri-drag-region>
+        {/* macOS Traffic Lights (Close, Minimize, Zoom) */}
+        <Show when={isMacPlatform()}>
+          <div class="flex items-center space-x-2 mr-1 group shrink-0" data-tauri-drag-region={false}>
+            {/* Close Button: Red */}
+            <button
+              onClick={handleClose}
+              class="w-3 h-3 rounded-full bg-[#ff5f56] border border-[#e0443e] flex items-center justify-center cursor-pointer transition-transform active:scale-90 text-[#4c0002] focus:outline-hidden"
+              title="Close (⌘Q / ⌘W)"
+            >
+              <svg
+                class="w-2 h-2 opacity-0 group-hover:opacity-100 transition-opacity"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="3"
+                stroke-linecap="round"
+              >
+                <path d="M18 6L6 18M6 6l12 12" />
+              </svg>
+            </button>
+
+            {/* Minimize Button: Yellow */}
+            <button
+              onClick={handleMinimize}
+              class="w-3 h-3 rounded-full bg-[#ffbd2e] border border-[#dea123] flex items-center justify-center cursor-pointer transition-transform active:scale-90 text-[#5b3c00] focus:outline-hidden"
+              title="Minimize (⌘M)"
+            >
+              <svg
+                class="w-2 h-2 opacity-0 group-hover:opacity-100 transition-opacity"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="3.5"
+                stroke-linecap="round"
+              >
+                <path d="M5 12h14" />
+              </svg>
+            </button>
+
+            {/* Maximize / Zoom Button: Green */}
+            <button
+              onClick={handleToggleMaximize}
+              class="w-3 h-3 rounded-full bg-[#27c93f] border border-[#1aab29] flex items-center justify-center cursor-pointer transition-transform active:scale-90 text-[#004d11] focus:outline-hidden"
+              title="Zoom / Toggle Maximize"
+            >
+              <svg
+                class="w-2 h-2 opacity-0 group-hover:opacity-100 transition-opacity"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="3"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" />
+              </svg>
+            </button>
+          </div>
+        </Show>
+
+        {/* Brand Name */}
+        <div class="flex items-center font-semibold text-xs tracking-wider text-[var(--color-text-primary)]">
           <span class="text-indigo-500 font-bold mr-1">✦</span> Stackmynd
         </div>
 
@@ -61,8 +194,8 @@ export const TitleBar: Component = () => {
         </button>
       </div>
 
-      {/* Right section: View Mode Toggles, Theme & Inspector */}
-      <div class="flex items-center space-x-1.5">
+      {/* Right section: View Mode Toggles, Theme, Inspector & Windows Controls */}
+      <div class="flex items-center space-x-1.5 pr-2">
         {/* Editor Mode Segmented Controls */}
         <div class="flex items-center p-0.5 rounded-md bg-[var(--color-bg-secondary)] border border-[var(--color-border)]">
           <button
@@ -141,6 +274,53 @@ export const TitleBar: Component = () => {
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
           </svg>
         </button>
+
+        {/* Windows / Linux Window Controls (Minimize, Maximize/Restore, Close) */}
+        <Show when={!isMacPlatform()}>
+          <div class="h-[38px] flex items-center ml-1 border-l border-[var(--color-border)] pl-1 -mr-2">
+            {/* Minimize */}
+            <button
+              onClick={handleMinimize}
+              class="h-full w-10 flex items-center justify-center hover:bg-[var(--color-bg-tertiary)] text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] transition-colors focus:outline-hidden"
+              title="Minimize"
+            >
+              <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M4 12h16" />
+              </svg>
+            </button>
+
+            {/* Maximize / Restore */}
+            <button
+              onClick={handleToggleMaximize}
+              class="h-full w-10 flex items-center justify-center hover:bg-[var(--color-bg-tertiary)] text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] transition-colors focus:outline-hidden"
+              title={isMaximized() ? "Restore" : "Maximize"}
+            >
+              <Show
+                when={isMaximized()}
+                fallback={
+                  <svg class="w-2.5 h-2.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="4" y="4" width="16" height="16" rx="1" />
+                  </svg>
+                }
+              >
+                <svg class="w-2.5 h-2.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M8 4h12v12M4 8h12v12H4z" />
+                </svg>
+              </Show>
+            </button>
+
+            {/* Close */}
+            <button
+              onClick={handleClose}
+              class="h-full w-10 flex items-center justify-center hover:bg-[#e81123] hover:text-white text-[var(--color-text-muted)] transition-colors focus:outline-hidden"
+              title="Close"
+            >
+              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+        </Show>
       </div>
     </header>
   );

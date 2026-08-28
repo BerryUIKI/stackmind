@@ -12,6 +12,7 @@
   "app": {
     "windows": [
       {
+        "label": "main",
         "title": "Stackmynd",
         "width": 1280,
         "height": 800,
