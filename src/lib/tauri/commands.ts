@@ -170,3 +170,51 @@ export async function listWorkspaceTags(): Promise<TagCount[]> {
 export async function rebuildWorkspaceIndex(): Promise<void> {
   await invoke("rebuild_workspace_index");
 }
+
+export interface ParsedBlock {
+  block_id: string;
+  block_type: string;
+  heading_level: number | null;
+  start_line: number;
+  end_line: number;
+  start_char: number;
+  end_char: number;
+  content: string;
+  content_hash: string;
+  text_preview: string;
+}
+
+export interface ParsedLink {
+  target_path: string;
+  target_block_id: string | null;
+  target_heading: string | null;
+  alias: string | null;
+  link_text: string;
+  line_number: number;
+  is_wikilink: boolean;
+}
+
+export interface ParsedDocument {
+  frontmatter_raw: string | null;
+  frontmatter_fields: Record<string, any>;
+  tags: string[];
+  blocks: ParsedBlock[];
+  links: ParsedLink[];
+}
+
+export interface RepairedFileResult {
+  file_path: string;
+  rewrites_count: number;
+}
+
+export async function parseDocument(relativePath: string): Promise<ParsedDocument> {
+  return await invoke<ParsedDocument>("parse_document", { relativePath });
+}
+
+export async function insertBlockAnchor(relativePath: string, targetLine: number): Promise<string> {
+  return await invoke<string>("insert_block_anchor", { relativePath, targetLine });
+}
+
+export async function repairLinksOnRename(oldPath: string, newPath: string): Promise<RepairedFileResult[]> {
+  return await invoke<RepairedFileResult[]>("repair_links_on_rename", { oldPath, newPath });
+}

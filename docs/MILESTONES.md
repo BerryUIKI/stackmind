@@ -11,7 +11,7 @@ This document tracks the phased implementation milestones, acceptance criteria, 
 | **M1** | Project Scaffolding & Foundational Architecture | `v0.1.0` | ✅ Completed |
 | **M2** | Workspace Management, Atomic File I/O & Watcher Engine | `v0.2.0` | ✅ Completed |
 | **M3** | SQLite Ephemeral Index Layer & Schema Migrations | `v0.3.0` | ✅ Completed |
-| **M4** | Markdown Lexer, Block Slicer & Link Repair Engine | `v0.4.0` | ⚪ Not Started |
+| **M4** | Markdown Lexer, Block Slicer & Link Repair Engine | `v0.4.0` | ✅ Completed |
 | **M5** | Native Tantivy Full-Text Search Engine | `v0.5.0` | ⚪ Not Started |
 | **M6** | 5-Area Spatial Grid & Navigation Shell | `v0.6.0` | ⚪ Not Started |
 | **M7** | Tri-Mode Editor & Synchronized Split View | `v0.7.0` | ⚪ Not Started |
@@ -49,13 +49,13 @@ This document tracks the phased implementation milestones, acceptance criteria, 
   - [x] Full workspace rebuild pipeline with atomic database swap (`index.db.rebuild` -> `index.db`).
 
 ### Milestone 4: Markdown Lexer, Block Slicer & Link Repair Engine
-- **Status:** ⚪ Not Started
+- **Status:** ✅ Completed
 - **Key Deliverables:**
-  - [ ] Semantic block parser partitioning notes into discrete blocks (headings, paragraphs, lists, quotes, tables, code, math).
-  - [ ] Deterministic `^bk-xxxx` block ID generator, validator, and anchor insertion.
-  - [ ] Roundtrip YAML frontmatter parser preserving comments, order, and indentation.
-  - [ ] Bi-directional link extractor (`[[note]]`, `[[note#^blockid]]`, standard links, `#tags`).
-  - [ ] Global Link Repair Engine updating all inbound wikilinks upon file/folder rename or move.
+  - [x] Semantic block parser partitioning notes into discrete blocks (headings, paragraphs, lists, quotes, tables, code, math).
+  - [x] Deterministic `^bk-xxxx` block ID generator, validator, and anchor insertion.
+  - [x] Roundtrip YAML frontmatter parser preserving comments, order, and indentation.
+  - [x] Bi-directional link extractor (`[[note]]`, `[[note#^blockid]]`, standard links, `#tags`).
+  - [x] Global Link Repair Engine updating all inbound wikilinks upon file/folder rename or move.
 
 ### Milestone 5: Native Tantivy Full-Text Search Engine
 - **Status:** ⚪ Not Started
