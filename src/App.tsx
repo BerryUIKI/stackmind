@@ -12,6 +12,7 @@ import { Inspector } from "@/components/layout/Inspector";
 import { StatusBar } from "@/components/layout/StatusBar";
 import { TrashModal } from "@/components/modals/TrashModal";
 import { WorkspaceModal } from "@/components/modals/WorkspaceModal";
+import { SearchModal } from "@/components/modals/SearchModal";
 import { SynchronizedEditor } from "@/components/editor/SynchronizedEditor";
 
 export const App: Component = () => {
@@ -141,6 +142,7 @@ export const App: Component = () => {
       {/* Global Modals */}
       <TrashModal />
       <WorkspaceModal />
+      <SearchModal />
     </div>
   );
 };
