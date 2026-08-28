@@ -1,7 +1,7 @@
 import { createSignal, createRoot } from "solid-js";
 
 export type EditorMode = "source" | "preview" | "split";
-export type InspectorTab = "metadata" | "outlinks" | "backlinks" | "outline";
+export type InspectorTab = "metadata" | "outlinks" | "backlinks" | "outline" | "graph";
 export type Theme = "dark" | "light";
 
 function createUIStore() {
@@ -18,6 +18,8 @@ function createUIStore() {
   const [searchOpen, setSearchOpen] = createSignal<boolean>(false);
   const [trashModalOpen, setTrashModalOpen] = createSignal<boolean>(false);
   const [workspaceModalOpen, setWorkspaceModalOpen] = createSignal<boolean>(false);
+  const [graphModalOpen, setGraphModalOpen] = createSignal<boolean>(false);
+  const [gitModalOpen, setGitModalOpen] = createSignal<boolean>(false);
 
   const toggleSidebar = () => setSidebarCollapsed(!sidebarCollapsed());
   const toggleInspector = () => setInspectorCollapsed(!inspectorCollapsed());
@@ -69,6 +71,10 @@ function createUIStore() {
     setTrashModalOpen,
     workspaceModalOpen,
     setWorkspaceModalOpen,
+    graphModalOpen,
+    setGraphModalOpen,
+    gitModalOpen,
+    setGitModalOpen,
   };
 }
 

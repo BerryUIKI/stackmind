@@ -13,6 +13,7 @@ import { StatusBar } from "@/components/layout/StatusBar";
 import { TrashModal } from "@/components/modals/TrashModal";
 import { WorkspaceModal } from "@/components/modals/WorkspaceModal";
 import { SearchModal } from "@/components/modals/SearchModal";
+import { GlobalGraphModal } from "@/components/graph/GlobalGraphModal";
 import { SynchronizedEditor } from "@/components/editor/SynchronizedEditor";
 
 export const App: Component = () => {
@@ -57,6 +58,9 @@ export const App: Component = () => {
         } else {
           uiStore.toggleSidebar();
         }
+      } else if (isCmdOrCtrl && e.key.toLowerCase() === "g") {
+        e.preventDefault();
+        uiStore.setGraphModalOpen(!uiStore.graphModalOpen());
       } else if (isCmdOrCtrl && e.key.toLowerCase() === "k") {
         e.preventDefault();
         uiStore.setSearchOpen(true);
@@ -143,6 +147,7 @@ export const App: Component = () => {
       <TrashModal />
       <WorkspaceModal />
       <SearchModal />
+      <GlobalGraphModal />
     </div>
   );
 };

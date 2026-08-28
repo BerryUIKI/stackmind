@@ -238,3 +238,39 @@ export async function searchWorkspace(query: string, limit?: number): Promise<Se
 export async function rebuildSearchIndex(): Promise<void> {
   await invoke("rebuild_search_index");
 }
+
+export interface GraphNode {
+  id: string;
+  label: string;
+  node_type: "note" | "block" | "tag";
+  path: string;
+  block_id: string | null;
+  degree: number;
+  group: string;
+}
+
+export interface GraphEdge {
+  source: string;
+  target: string;
+  edge_type: "wikilink" | "block_ref" | "tag";
+}
+
+export interface WorkspaceGraphData {
+  nodes: GraphNode[];
+  edges: GraphEdge[];
+}
+
+export interface GraphFilter {
+  include_blocks?: boolean;
+  include_tags?: boolean;
+  search_query?: string;
+}
+
+export async function getWorkspaceGraphData(filter?: GraphFilter): Promise<WorkspaceGraphData> {
+  return await invoke<WorkspaceGraphData>("get_workspace_graph_data", { filter });
+}
+
+export async function getLocalGraphData(relativePath: string, depth?: number): Promise<WorkspaceGraphData> {
+  return await invoke<WorkspaceGraphData>("get_local_graph_data", { relativePath, depth });
+}
+

@@ -5,6 +5,7 @@ import { MetadataPanel } from "@/components/inspector/MetadataPanel";
 import { OutlinksPanel } from "@/components/inspector/OutlinksPanel";
 import { BacklinksPanel } from "@/components/inspector/BacklinksPanel";
 import { OutlinePanel } from "@/components/inspector/OutlinePanel";
+import { LocalGraphWidget } from "@/components/graph/LocalGraphWidget";
 
 export const Inspector: Component = () => {
   const currentTab = () => tabsStore.getActiveTab();
@@ -14,6 +15,7 @@ export const Inspector: Component = () => {
     { id: "outlinks", label: "Outlinks" },
     { id: "backlinks", label: "Backlinks" },
     { id: "outline", label: "Outline" },
+    { id: "graph", label: "Graph" },
   ];
 
   return (
@@ -90,6 +92,12 @@ export const Inspector: Component = () => {
 
             <Show when={uiStore.inspectorTab() === "outline"}>
               <OutlinePanel />
+            </Show>
+
+            <Show when={uiStore.inspectorTab() === "graph"}>
+              <div class="h-72 rounded-lg overflow-hidden border border-[var(--color-border)] shadow-xs">
+                <LocalGraphWidget />
+              </div>
             </Show>
           </div>
         </Show>

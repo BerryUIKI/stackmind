@@ -17,7 +17,7 @@ This document tracks the phased implementation milestones, acceptance criteria, 
 | **M7** | Tri-Mode Editor & Synchronized Split View | `v0.7.0` | ✅ Completed |
 | **M8** | Right Side Panel Inspector & Block Knowledge Graph | `v0.8.0` | ✅ Completed |
 | **M9** | Search Command Palette, E2E Integration & Verification | `v1.0.0` | ✅ Completed |
-| **M10** | Force-Directed Knowledge Graph Visualizer | `v1.1.0` | ⚪ Not Started |
+| **M10** | Force-Directed Knowledge Graph Visualizer | `v1.1.0` | ✅ Completed |
 | **M11** | Embedded Git Version Control Engine | `v1.2.0` | ⚪ Not Started |
 | **M12** | P2 Integration, Polish & Quality Verification | `v1.3.0` | ⚪ Not Started |
 
@@ -105,13 +105,13 @@ This document tracks the phased implementation milestones, acceptance criteria, 
   - [x] Final documentation update and acceptance verification.
 
 ### Milestone 10: Force-Directed Knowledge Graph Visualizer
-- **Status:** ⚪ Not Started
+- **Status:** ✅ Completed
 - **Key Deliverables:**
-  - [ ] Backend graph topology extraction commands (`get_workspace_graph_data`, `get_local_graph_data`).
-  - [ ] Canvas2D 60FPS velocity-Verlet physics engine with link attraction, charge repulsion, and center gravity.
-  - [ ] Global Graph View with pan/zoom, node dragging, degree scaling, and HUD controls.
-  - [ ] Local Graph Inspector widget showing active note's 1-hop and 2-hop neighborhood.
-  - [ ] Node interaction: hover highlights, hover card preview, click-to-navigate.
+  - [x] Backend graph topology extraction commands (`get_workspace_graph_data`, `get_local_graph_data`).
+  - [x] Canvas2D 60FPS velocity-Verlet physics engine with link attraction, charge repulsion, and center gravity.
+  - [x] Global Graph View with pan/zoom, node dragging, degree scaling, and HUD controls.
+  - [x] Local Graph Inspector widget showing active note's 1-hop and 2-hop neighborhood.
+  - [x] Node interaction: hover highlights, hover card preview, click-to-navigate.
 
 ### Milestone 11: Embedded Git Version Control Engine
 - **Status:** ⚪ Not Started
