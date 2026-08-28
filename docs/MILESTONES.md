@@ -16,7 +16,7 @@ This document tracks the phased implementation milestones, acceptance criteria, 
 | **M6** | 5-Area Spatial Grid & Navigation Shell | `v0.6.0` | ✅ Completed |
 | **M7** | Tri-Mode Editor & Synchronized Split View | `v0.7.0` | ✅ Completed |
 | **M8** | Right Side Panel Inspector & Block Knowledge Graph | `v0.8.0` | ✅ Completed |
-| **M9** | Search Command Palette, E2E Integration & Verification | `v1.0.0` | ⚪ Not Started |
+| **M9** | Search Command Palette, E2E Integration & Verification | `v1.0.0` | ✅ Completed |
 
 ---
 
@@ -94,9 +94,9 @@ This document tracks the phased implementation milestones, acceptance criteria, 
   - [x] Hover popover preview cards (300ms delay) and smooth animated scroll jumps.
 
 ### Milestone 9: Search Command Palette, E2E Integration & Verification
-- **Status:** ⚪ Not Started
+- **Status:** ✅ Completed
 - **Key Deliverables:**
-  - [ ] Global Command Palette (`Cmd+K` / `Ctrl+K`): quick search across titles, contents, blocks, and tags.
-  - [ ] End-to-end multi-workspace switching and local recycle bin restore/purge.
-  - [ ] Complete test suite execution (`cargo test`, `cargo clippy`, `pnpm tsc --noEmit`, `pnpm test`, `pnpm build`).
-  - [ ] Final documentation update and acceptance verification.
+  - [x] Global Command Palette (`Cmd+K` / `Ctrl+K`): quick search across titles, contents, blocks, and tags.
+  - [x] End-to-end multi-workspace switching and local recycle bin restore/purge.
+  - [x] Complete test suite execution (`cargo test`, `cargo clippy`, `pnpm tsc --noEmit`, `pnpm test`, `pnpm build`).
+  - [x] Final documentation update and acceptance verification.
