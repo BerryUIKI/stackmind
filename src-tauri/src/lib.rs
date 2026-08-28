@@ -39,6 +39,8 @@ pub fn run() {
             commands::markdown::repair_links_on_rename,
             commands::search::search_workspace,
             commands::search::rebuild_search_index,
+            commands::graph::get_workspace_graph_data,
+            commands::graph::get_local_graph_data,
         ])
         .run(tauri::generate_context!())
         .expect("error while running Stackmynd application");
@@ -385,5 +387,82 @@ mod tests {
         // Search tag
         let tag_results = engine::search(&index, &schema_def, "systems", 10).unwrap();
         assert!(!tag_results.is_empty());
+    }
+
+    #[test]
+    fn test_knowledge_graph_extraction() {
+        let test_dir = tempfile::tempdir().unwrap();
+        let db_path = test_dir.path().join("index.db");
+
+        let mut conn = connection::open_db_at_path(&db_path).unwrap();
+        schema::initialize_schema(&conn).unwrap();
+
+        let ws_meta = WorkspaceMetadata {
+            id: "ws-graph".to_string(),
+            name: "Graph WS".to_string(),
+            path: test_dir.path().to_string_lossy().to_string(),
+            created_at: 1000,
+            last_opened_at: 1000,
+            version: "1.0.0".to_string(),
+        };
+        indexer::upsert_workspace(&conn, &ws_meta).unwrap();
+
+        // Note A
+        let file_a_id = indexer::upsert_file_record(
+            &conn,
+            "ws-graph",
+            &FilePayload {
+                relative_path: "note_a.md".to_string(),
+                content: "# Note A\n[[note_b]]".to_string(),
+                size_bytes: 20,
+                mtime_ms: 1000,
+                hash_blake3: "hash_a".to_string(),
+            },
+            None,
+        )
+        .unwrap();
+
+        // Note B
+        let file_b_id = indexer::upsert_file_record(
+            &conn,
+            "ws-graph",
+            &FilePayload {
+                relative_path: "note_b.md".to_string(),
+                content: "# Note B\nTarget note".to_string(),
+                size_bytes: 20,
+                mtime_ms: 1000,
+                hash_blake3: "hash_b".to_string(),
+            },
+            None,
+        )
+        .unwrap();
+
+        // Link A -> B
+        let link_a_to_b = DbLinkRecord {
+            id: 0,
+            source_file_id: file_a_id,
+            source_relative_path: "note_a.md".to_string(),
+            source_block_id: None,
+            target_relative_path: "note_b.md".to_string(),
+            target_file_id: Some(file_b_id),
+            target_block_id: None,
+            link_type: "wikilink".to_string(),
+            link_text: "note_b".to_string(),
+            line_number: 2,
+            is_broken: false,
+            created_at: 1000,
+        };
+        indexer::replace_file_links(&mut conn, file_a_id, &[link_a_to_b]).unwrap();
+
+        // Extract graph
+        let graph = services::graph::service::get_workspace_graph(&conn, None).unwrap();
+        assert_eq!(graph.nodes.len(), 2);
+        assert_eq!(graph.edges.len(), 1);
+        assert_eq!(graph.edges[0].source, "note_a.md");
+        assert_eq!(graph.edges[0].target, "note_b.md");
+
+        // Test local graph from note_a.md
+        let local_graph = services::graph::service::get_local_graph(&conn, "note_a.md", 1).unwrap();
+        assert_eq!(local_graph.nodes.len(), 2);
     }
 }

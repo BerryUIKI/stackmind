@@ -100,6 +100,17 @@ export const TitleBar: Component = () => {
           </button>
         </div>
 
+        {/* Knowledge Graph Button */}
+        <button
+          onClick={() => uiStore.setGraphModalOpen(true)}
+          class="p-1 rounded hover:bg-[var(--color-bg-tertiary)] text-[var(--color-text-muted)] hover:text-indigo-400 cursor-pointer transition-colors"
+          title="Open Knowledge Graph (Cmd+G)"
+        >
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+          </svg>
+        </button>
+
         {/* Theme Toggle */}
         <button
           onClick={uiStore.toggleTheme}
