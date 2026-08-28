@@ -1,9 +1,27 @@
-import { Component, Show } from "solid-js";
+import { Component, Show, createSignal, createEffect, onMount } from "solid-js";
 import { tabsStore } from "@/store/tabs";
 import { workspaceStore } from "@/store/workspace";
+import { uiStore } from "@/store/ui";
+import { gitStatus, GitStatusResult } from "@/lib/tauri/commands";
 
 export const StatusBar: Component = () => {
   const currentTab = () => tabsStore.getActiveTab();
+  const [gitInfo, setGitInfo] = createSignal<GitStatusResult | null>(null);
+
+  const refreshGit = () => {
+    gitStatus().then(setGitInfo).catch(() => setGitInfo(null));
+  };
+
+  createEffect(() => {
+    // Refresh git when workspace changes or tab saves
+    if (workspaceStore.activeWorkspace() || tabsStore.saveStatus() === "saved") {
+      refreshGit();
+    }
+  });
+
+  onMount(() => {
+    refreshGit();
+  });
 
   const stats = () => {
     const tab = currentTab();
@@ -17,7 +35,7 @@ export const StatusBar: Component = () => {
 
   return (
     <footer class="h-6 min-h-6 w-full flex items-center justify-between px-3 text-[11px] text-[var(--color-text-muted)] border-t border-[var(--color-border)] bg-[var(--color-bg-sidebar)] select-none z-40">
-      {/* Left: Workspace & Indexer Status */}
+      {/* Left: Workspace, Git & Indexer Status */}
       <div class="flex items-center space-x-3 truncate">
         <span class="flex items-center space-x-1">
           <span class="w-1.5 h-1.5 rounded-full bg-emerald-500" />
@@ -25,6 +43,20 @@ export const StatusBar: Component = () => {
             {workspaceStore.activeWorkspace()?.name || "Local"}
           </span>
         </span>
+
+        <Show when={gitInfo()?.is_repo}>
+          <button
+            onClick={() => uiStore.setGitModalOpen(true)}
+            class="flex items-center space-x-1 px-1.5 py-0.2 rounded hover:bg-[var(--color-bg-tertiary)] text-[var(--color-text-secondary)] hover:text-indigo-400 cursor-pointer transition-colors"
+            title="Open Git Manager (Cmd+Shift+G)"
+          >
+            <span> {gitInfo()?.branch}</span>
+            <Show when={!gitInfo()?.clean}>
+              <span class="w-1.5 h-1.5 rounded-full bg-amber-400" title="Uncommitted changes" />
+            </Show>
+          </button>
+        </Show>
+
         <span class="text-[10px] text-[var(--color-text-muted)]">Index: Synced</span>
       </div>
 

@@ -1,5 +1,6 @@
 pub mod db;
 pub mod fs;
+pub mod git;
 pub mod graph;
 pub mod markdown;
 pub mod search;

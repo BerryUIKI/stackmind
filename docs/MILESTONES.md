@@ -18,7 +18,7 @@ This document tracks the phased implementation milestones, acceptance criteria, 
 | **M8** | Right Side Panel Inspector & Block Knowledge Graph | `v0.8.0` | ✅ Completed |
 | **M9** | Search Command Palette, E2E Integration & Verification | `v1.0.0` | ✅ Completed |
 | **M10** | Force-Directed Knowledge Graph Visualizer | `v1.1.0` | ✅ Completed |
-| **M11** | Embedded Git Version Control Engine | `v1.2.0` | ⚪ Not Started |
+| **M11** | Embedded Git Version Control Engine | `v1.2.0` | ✅ Completed |
 | **M12** | P2 Integration, Polish & Quality Verification | `v1.3.0` | ⚪ Not Started |
 
 ---
@@ -114,12 +114,12 @@ This document tracks the phased implementation milestones, acceptance criteria, 
   - [x] Node interaction: hover highlights, hover card preview, click-to-navigate.
 
 ### Milestone 11: Embedded Git Version Control Engine
-- **Status:** ⚪ Not Started
+- **Status:** ✅ Completed
 - **Key Deliverables:**
-  - [ ] Backend Git service (`git_status`, `git_log`, `git_diff`, `git_commit`, `git_list_branches`, `git_checkout_branch`).
-  - [ ] TitleBar / StatusBar Git indicator showing active branch and uncommitted change count.
-  - [ ] Git Management Modal (`Cmd+Shift+G`) with Changes list, inline unified diff viewer, and commit form.
-  - [ ] Commit history timeline viewer and branch switcher.
+  - [x] Backend Git service (`git_status`, `git_log`, `git_diff`, `git_commit`, `git_list_branches`, `git_checkout_branch`).
+  - [x] TitleBar / StatusBar Git indicator showing active branch and uncommitted change count.
+  - [x] Git Management Modal (`Cmd+Shift+G`) with Changes list, inline unified diff viewer, and commit form.
+  - [x] Commit history timeline viewer and branch switcher.
 
 ### Milestone 12: P2 Integration, Polish & Quality Verification
 - **Status:** ⚪ Not Started

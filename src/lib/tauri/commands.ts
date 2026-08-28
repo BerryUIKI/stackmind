@@ -274,3 +274,68 @@ export async function getLocalGraphData(relativePath: string, depth?: number): P
   return await invoke<WorkspaceGraphData>("get_local_graph_data", { relativePath, depth });
 }
 
+export interface GitFileStatus {
+  path: string;
+  status: "modified" | "untracked" | "deleted" | "staged";
+}
+
+export interface GitStatusResult {
+  is_repo: boolean;
+  branch: string;
+  files: GitFileStatus[];
+  clean: boolean;
+}
+
+export interface GitCommit {
+  hash: string;
+  short_hash: string;
+  author: string;
+  email: string;
+  timestamp: number;
+  message: string;
+}
+
+export interface GitBranch {
+  name: string;
+  is_current: boolean;
+}
+
+export interface GitBranchesResult {
+  branches: GitBranch[];
+  current: string;
+}
+
+export interface GitCommitResult {
+  commit_hash: string;
+  message: string;
+}
+
+export async function gitStatus(): Promise<GitStatusResult> {
+  return await invoke<GitStatusResult>("git_status");
+}
+
+export async function gitDiff(filePath?: string): Promise<string> {
+  return await invoke<string>("git_diff", { filePath });
+}
+
+export async function gitCommit(message: string, stageAll?: boolean): Promise<GitCommitResult> {
+  return await invoke<GitCommitResult>("git_commit", { message, stageAll });
+}
+
+export async function gitLog(limit?: number): Promise<GitCommit[]> {
+  return await invoke<GitCommit[]>("git_log", { limit });
+}
+
+export async function gitListBranches(): Promise<GitBranchesResult> {
+  return await invoke<GitBranchesResult>("git_list_branches");
+}
+
+export async function gitCheckoutBranch(branchName: string): Promise<void> {
+  await invoke("git_checkout_branch", { branchName });
+}
+
+export async function gitCreateBranch(branchName: string): Promise<void> {
+  await invoke("git_create_branch", { branchName });
+}
+
+
