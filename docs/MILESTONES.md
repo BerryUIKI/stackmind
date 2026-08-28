@@ -14,7 +14,7 @@ This document tracks the phased implementation milestones, acceptance criteria, 
 | **M4** | Markdown Lexer, Block Slicer & Link Repair Engine | `v0.4.0` | ✅ Completed |
 | **M5** | Native Tantivy Full-Text Search Engine | `v0.5.0` | ✅ Completed |
 | **M6** | 5-Area Spatial Grid & Navigation Shell | `v0.6.0` | ✅ Completed |
-| **M7** | Tri-Mode Editor & Synchronized Split View | `v0.7.0` | ⚪ Not Started |
+| **M7** | Tri-Mode Editor & Synchronized Split View | `v0.7.0` | ✅ Completed |
 | **M8** | Right Side Panel Inspector & Block Knowledge Graph | `v0.8.0` | ⚪ Not Started |
 | **M9** | Search Command Palette, E2E Integration & Verification | `v1.0.0` | ⚪ Not Started |
 
@@ -76,13 +76,13 @@ This document tracks the phased implementation milestones, acceptance criteria, 
   - [x] Session layout persistence in `.stackmynd/session.json`.
 
 ### Milestone 7: Tri-Mode Editor & Synchronized Split View
-- **Status:** ⚪ Not Started
+- **Status:** ✅ Completed
 - **Key Deliverables:**
-  - [ ] Mode 1: Source Mode (monospaced editor, line numbers, visible frontmatter & `^bk-xxxx` anchors).
-  - [ ] Mode 2: Preview Mode (rendered typography, hidden `^bk-xxxx` anchors with `data-block-id`, KaTeX math, Mermaid diagrams with error boundaries).
-  - [ ] Mode 3: Sync Split Mode (dual-pane view with line-proportional synchronized scrolling).
-  - [ ] 800ms debounced auto-save engine + manual `Cmd+S` / `Ctrl+S` force save.
-  - [ ] External modification detection & 3-way conflict resolution banner.
+  - [x] Mode 1: Source Mode (monospaced editor, line numbers, visible frontmatter & `^bk-xxxx` anchors).
+  - [x] Mode 2: Preview Mode (rendered typography, hidden `^bk-xxxx` anchors with `data-block-id`, KaTeX math, Mermaid diagrams with error boundaries).
+  - [x] Mode 3: Sync Split Mode (dual-pane view with line-proportional synchronized scrolling).
+  - [x] 800ms debounced auto-save engine + manual `Cmd+S` / `Ctrl+S` force save.
+  - [x] External modification detection & 3-way conflict resolution banner.
 
 ### Milestone 8: Right Side Panel Inspector & Block Knowledge Graph
 - **Status:** ⚪ Not Started

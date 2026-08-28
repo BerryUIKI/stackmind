@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "katex/dist/katex.min.css";
 
 :root {
   --bg-primary: #1a1b26;
@@ -16,6 +17,17 @@
   --success: #9ece6a;
   --warning: #e0af68;
   --danger: #f7768e;
+
+  --color-bg-primary: var(--bg-primary);
+  --color-bg-secondary: var(--bg-secondary);
+  --color-bg-tertiary: var(--bg-tertiary);
+  --color-bg-sidebar: var(--bg-secondary);
+  --color-border: var(--border-color);
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-muted: var(--text-muted);
+  --color-accent: var(--accent);
+  --color-accent-subtle: var(--accent-muted);
 }
 
 [data-theme="light"] {
@@ -34,6 +46,17 @@
   --success: #16a34a;
   --warning: #d97706;
   --danger: #dc2626;
+
+  --color-bg-primary: var(--bg-primary);
+  --color-bg-secondary: var(--bg-secondary);
+  --color-bg-tertiary: var(--bg-tertiary);
+  --color-bg-sidebar: var(--bg-secondary);
+  --color-border: var(--border-color);
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-muted: var(--text-muted);
+  --color-accent: var(--accent);
+  --color-accent-subtle: var(--accent-muted);
 }
 
 /* Custom scrollbars */

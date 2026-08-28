@@ -12,6 +12,7 @@ import { Inspector } from "@/components/layout/Inspector";
 import { StatusBar } from "@/components/layout/StatusBar";
 import { TrashModal } from "@/components/modals/TrashModal";
 import { WorkspaceModal } from "@/components/modals/WorkspaceModal";
+import { SynchronizedEditor } from "@/components/editor/SynchronizedEditor";
 
 export const App: Component = () => {
   let unlistenWatcher: (() => void) | null = null;
@@ -119,30 +120,8 @@ export const App: Component = () => {
                 </div>
               }
             >
-              {/* Note Content Viewport Placeholder (wired to Tri-Mode Editor in M7) */}
-              <div class="flex-1 flex overflow-hidden">
-                <Show when={uiStore.editorMode() === "source" || uiStore.editorMode() === "split"}>
-                  <div class="flex-1 h-full p-4 overflow-y-auto font-mono text-xs bg-[var(--color-bg-secondary)] border-r border-[var(--color-border)]">
-                    <textarea
-                      value={tabsStore.getActiveTab()?.content || ""}
-                      onInput={(e) => tabsStore.updateTabContent(e.currentTarget.value)}
-                      class="w-full h-full bg-transparent resize-none focus:outline-hidden text-[var(--color-text-primary)] leading-relaxed font-mono"
-                      placeholder="Start typing your Markdown note..."
-                    />
-                  </div>
-                </Show>
-
-                <Show when={uiStore.editorMode() === "preview" || uiStore.editorMode() === "split"}>
-                  <div class="flex-1 h-full p-6 overflow-y-auto text-sm leading-relaxed prose dark:prose-invert max-w-none bg-[var(--color-bg-primary)]">
-                    <div class="font-bold text-xl mb-4 text-[var(--color-text-primary)]">
-                      {tabsStore.getActiveTab()?.title}
-                    </div>
-                    <pre class="p-3 rounded-lg bg-[var(--color-bg-secondary)] text-xs text-[var(--color-text-secondary)] whitespace-pre-wrap font-mono">
-                      {tabsStore.getActiveTab()?.content}
-                    </pre>
-                  </div>
-                </Show>
-              </div>
+              {/* Note Content Viewport: Full Tri-Mode Synchronized Editor */}
+              <SynchronizedEditor />
             </Show>
           </div>
         </main>
