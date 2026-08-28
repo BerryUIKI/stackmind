@@ -34,6 +34,9 @@ pub fn run() {
             commands::index::get_file_outlinks,
             commands::index::list_workspace_tags,
             commands::index::rebuild_workspace_index,
+            commands::markdown::parse_document,
+            commands::markdown::insert_block_anchor,
+            commands::markdown::repair_links_on_rename,
         ])
         .run(tauri::generate_context!())
         .expect("error while running Stackmynd application");
@@ -46,6 +49,9 @@ mod tests {
     use models::fs::FilePayload;
     use models::workspace::WorkspaceMetadata;
     use services::db::{connection, indexer, rebuild, schema};
+    use services::markdown::{
+        block_anchor, block_parser, frontmatter, link_extractor, link_repair,
+    };
     use std::fs;
     use std::path::Path;
 
@@ -262,5 +268,82 @@ mod tests {
             .query_row("SELECT COUNT(*) FROM files;", [], |r| r.get(0))
             .unwrap();
         assert_eq!(count, 2);
+    }
+
+    #[test]
+    fn test_frontmatter_extraction_and_update() {
+        let doc = "---\ntitle: My Note\ntags: [rust, tauri]\n---\n# Real Content\nParagraph.";
+        let (raw, body) = frontmatter::extract_frontmatter(doc);
+        assert!(raw.is_some());
+        assert!(body.starts_with("# Real Content"));
+
+        let (fields, tags) = frontmatter::parse_frontmatter(raw.as_ref().unwrap());
+        assert_eq!(fields.get("title").unwrap().as_str().unwrap(), "My Note");
+        assert_eq!(tags, vec!["rust", "tauri"]);
+
+        let updated = frontmatter::update_frontmatter_value(doc, "title", "Renamed Title");
+        assert!(updated.contains("title: Renamed Title"));
+    }
+
+    #[test]
+    fn test_block_parsing_and_anchors() {
+        let content = "# Header 1\n\nThis is a paragraph with anchor. ^bk-a1b2\n\n```rust\nfn main() {}\n```\n\n> Blockquote here";
+        let doc = block_parser::parse_markdown_document(content);
+        assert_eq!(doc.blocks.len(), 4);
+
+        assert_eq!(doc.blocks[0].block_type, "heading");
+        assert_eq!(doc.blocks[0].heading_level, Some(1));
+
+        assert_eq!(doc.blocks[1].block_type, "paragraph");
+        assert_eq!(doc.blocks[1].block_id, "bk-a1b2");
+
+        assert_eq!(doc.blocks[2].block_type, "code");
+        assert_eq!(doc.blocks[3].block_type, "blockquote");
+
+        // Test stripping
+        let stripped = block_anchor::strip_block_id("Some line ^bk-9999");
+        assert_eq!(stripped, "Some line");
+
+        // Test inserting anchor
+        let (with_anchor, new_id) = block_anchor::insert_anchor_at_line("Plain text line", 1);
+        assert!(with_anchor.contains(&format!("^{new_id}")));
+    }
+
+    #[test]
+    fn test_link_extractor_and_repair() {
+        let content =
+            "Check [[note_b#Heading|My Alias]] and [[note_c#^bk-0001]] with #knowledge tag.";
+        let (links, tags) = link_extractor::extract_links_and_tags(content);
+        assert_eq!(links.len(), 2);
+        assert_eq!(links[0].target_path, "note_b");
+        assert_eq!(links[0].target_heading, Some("Heading".to_string()));
+        assert_eq!(links[0].alias, Some("My Alias".to_string()));
+
+        assert_eq!(links[1].target_path, "note_c");
+        assert_eq!(links[1].target_block_id, Some("bk-0001".to_string()));
+
+        assert_eq!(tags, vec!["knowledge"]);
+
+        // Test workspace-wide link repair
+        let test_dir = tempfile::tempdir().unwrap();
+        let root = test_dir.path();
+
+        services::fs_service::atomic_write_file(
+            root,
+            "referencing.md",
+            "See [[old_name#^bk-123|Custom Alias]] for details.",
+        )
+        .unwrap();
+
+        let repaired =
+            link_repair::repair_workspace_links(root, "old_name.md", "new_name.md").unwrap();
+        assert_eq!(repaired.len(), 1);
+        assert_eq!(repaired[0].rewrites_count, 1);
+
+        let modified = services::fs_service::read_file(root, "referencing.md").unwrap();
+        assert_eq!(
+            modified.content,
+            "See [[new_name#^bk-123|Custom Alias]] for details."
+        );
     }
 }
