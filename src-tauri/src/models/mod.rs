@@ -1,3 +1,2 @@
 pub mod fs;
-pub mod ping;
 pub mod workspace;

@@ -33,3 +33,7 @@ pulldown-cmark = { version = "0.13", features = ["simd"] }
 rayon = "1.10"
 thiserror = "2"
 chrono = { version = "0.4", features = ["serde"] }
+dirs = "6"
+
+[dev-dependencies]
+tempfile = "3"
