@@ -13,7 +13,7 @@ This document tracks the phased implementation milestones, acceptance criteria, 
 | **M3** | SQLite Ephemeral Index Layer & Schema Migrations | `v0.3.0` | ✅ Completed |
 | **M4** | Markdown Lexer, Block Slicer & Link Repair Engine | `v0.4.0` | ✅ Completed |
 | **M5** | Native Tantivy Full-Text Search Engine | `v0.5.0` | ✅ Completed |
-| **M6** | 5-Area Spatial Grid & Navigation Shell | `v0.6.0` | ⚪ Not Started |
+| **M6** | 5-Area Spatial Grid & Navigation Shell | `v0.6.0` | ✅ Completed |
 | **M7** | Tri-Mode Editor & Synchronized Split View | `v0.7.0` | ⚪ Not Started |
 | **M8** | Right Side Panel Inspector & Block Knowledge Graph | `v0.8.0` | ⚪ Not Started |
 | **M9** | Search Command Palette, E2E Integration & Verification | `v1.0.0` | ⚪ Not Started |
@@ -66,14 +66,14 @@ This document tracks the phased implementation milestones, acceptance criteria, 
   - [x] BM25 relevance ranking with boosting: title (3.0x), headings (2.2x), tags (2.0x), body (1.0x).
 
 ### Milestone 6: 5-Area Spatial Grid & Navigation Shell
-- **Status:** ⚪ Not Started
+- **Status:** ✅ Completed
 - **Key Deliverables:**
-  - [ ] Area 1: Custom Top Title Bar (traffic lights / window controls, workspace dropdown, view mode controls, search trigger, theme toggle).
-  - [ ] Area 2: Left Resizable/Collapsible Sidebar (workspace switcher, new note/folder actions, virtualized file tree, trash anchor).
-  - [ ] Area 3: Central Main Tab Strip (multi-tabs, dirty badges, close buttons, middle-click close, breadcrumbs).
-  - [ ] Area 5: Bottom Status Bar (workspace status, indexing indicator, word count, block count, cursor line/col, save status).
-  - [ ] Resizable splitter dividers with snapping and keyboard shortcuts (`Cmd+B`, `Cmd+Shift+B`).
-  - [ ] Session layout persistence in `.stackmynd/session.json`.
+  - [x] Area 1: Custom Top Title Bar (traffic lights / window controls, workspace dropdown, view mode controls, search trigger, theme toggle).
+  - [x] Area 2: Left Resizable/Collapsible Sidebar (workspace switcher, new note/folder actions, virtualized file tree, trash anchor).
+  - [x] Area 3: Central Main Tab Strip (multi-tabs, dirty badges, close buttons, middle-click close, breadcrumbs).
+  - [x] Area 5: Bottom Status Bar (workspace status, indexing indicator, word count, block count, cursor line/col, save status).
+  - [x] Resizable splitter dividers with snapping and keyboard shortcuts (`Cmd+B`, `Cmd+Shift+B`).
+  - [x] Session layout persistence in `.stackmynd/session.json`.
 
 ### Milestone 7: Tri-Mode Editor & Synchronized Split View
 - **Status:** ⚪ Not Started
