@@ -19,7 +19,7 @@ This document tracks the phased implementation milestones, acceptance criteria, 
 | **M9** | Search Command Palette, E2E Integration & Verification | `v1.0.0` | ✅ Completed |
 | **M10** | Force-Directed Knowledge Graph Visualizer | `v1.1.0` | ✅ Completed |
 | **M11** | Embedded Git Version Control Engine | `v1.2.0` | ✅ Completed |
-| **M12** | P2 Integration, Polish & Quality Verification | `v1.3.0` | ⚪ Not Started |
+| **M12** | P2 Integration, Polish & Quality Verification | `v1.3.0` | ✅ Completed |
 
 ---
 
@@ -122,9 +122,9 @@ This document tracks the phased implementation milestones, acceptance criteria, 
   - [x] Commit history timeline viewer and branch switcher.
 
 ### Milestone 12: P2 Integration, Polish & Quality Verification
-- **Status:** ⚪ Not Started
+- **Status:** ✅ Completed
 - **Key Deliverables:**
-  - [ ] Global shortcuts (`Cmd+G` for Graph, `Cmd+Shift+G` for Git).
-  - [ ] File watcher auto-refresh on Git branch checkout and graph topology changes.
-  - [ ] Complete test suite execution (`cargo test`, `cargo clippy`, `pnpm tsc --noEmit`, `pnpm test`, `pnpm build`).
-  - [ ] Phase 2 documentation freeze and verification report.
+  - [x] Global shortcuts (`Cmd+G` for Graph, `Cmd+Shift+G` for Git).
+  - [x] File watcher auto-refresh on Git branch checkout and graph topology changes.
+  - [x] Complete test suite execution (`cargo test`, `cargo clippy`, `pnpm tsc --noEmit`, `pnpm test`, `pnpm build`).
+  - [x] Phase 2 documentation freeze and verification report.
