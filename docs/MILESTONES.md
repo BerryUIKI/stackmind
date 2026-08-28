@@ -17,6 +17,9 @@ This document tracks the phased implementation milestones, acceptance criteria, 
 | **M7** | Tri-Mode Editor & Synchronized Split View | `v0.7.0` | ✅ Completed |
 | **M8** | Right Side Panel Inspector & Block Knowledge Graph | `v0.8.0` | ✅ Completed |
 | **M9** | Search Command Palette, E2E Integration & Verification | `v1.0.0` | ✅ Completed |
+| **M10** | Force-Directed Knowledge Graph Visualizer | `v1.1.0` | ⚪ Not Started |
+| **M11** | Embedded Git Version Control Engine | `v1.2.0` | ⚪ Not Started |
+| **M12** | P2 Integration, Polish & Quality Verification | `v1.3.0` | ⚪ Not Started |
 
 ---
 
@@ -100,3 +103,28 @@ This document tracks the phased implementation milestones, acceptance criteria, 
   - [x] End-to-end multi-workspace switching and local recycle bin restore/purge.
   - [x] Complete test suite execution (`cargo test`, `cargo clippy`, `pnpm tsc --noEmit`, `pnpm test`, `pnpm build`).
   - [x] Final documentation update and acceptance verification.
+
+### Milestone 10: Force-Directed Knowledge Graph Visualizer
+- **Status:** ⚪ Not Started
+- **Key Deliverables:**
+  - [ ] Backend graph topology extraction commands (`get_workspace_graph_data`, `get_local_graph_data`).
+  - [ ] Canvas2D 60FPS velocity-Verlet physics engine with link attraction, charge repulsion, and center gravity.
+  - [ ] Global Graph View with pan/zoom, node dragging, degree scaling, and HUD controls.
+  - [ ] Local Graph Inspector widget showing active note's 1-hop and 2-hop neighborhood.
+  - [ ] Node interaction: hover highlights, hover card preview, click-to-navigate.
+
+### Milestone 11: Embedded Git Version Control Engine
+- **Status:** ⚪ Not Started
+- **Key Deliverables:**
+  - [ ] Backend Git service (`git_status`, `git_log`, `git_diff`, `git_commit`, `git_list_branches`, `git_checkout_branch`).
+  - [ ] TitleBar / StatusBar Git indicator showing active branch and uncommitted change count.
+  - [ ] Git Management Modal (`Cmd+Shift+G`) with Changes list, inline unified diff viewer, and commit form.
+  - [ ] Commit history timeline viewer and branch switcher.
+
+### Milestone 12: P2 Integration, Polish & Quality Verification
+- **Status:** ⚪ Not Started
+- **Key Deliverables:**
+  - [ ] Global shortcuts (`Cmd+G` for Graph, `Cmd+Shift+G` for Git).
+  - [ ] File watcher auto-refresh on Git branch checkout and graph topology changes.
+  - [ ] Complete test suite execution (`cargo test`, `cargo clippy`, `pnpm tsc --noEmit`, `pnpm test`, `pnpm build`).
+  - [ ] Phase 2 documentation freeze and verification report.
