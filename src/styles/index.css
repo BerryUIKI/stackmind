@@ -1,6 +1,29 @@
 @import "tailwindcss";
 @import "katex/dist/katex.min.css";
 
+/* Transparent window background for macOS rounded corners */
+html, body {
+  background: transparent !important;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+/* macOS-style rounded window shell */
+.app-shell {
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 0 0 0.5px rgba(0, 0, 0, 0.12),
+              0 2px 10px rgba(0, 0, 0, 0.08),
+              0 8px 30px rgba(0, 0, 0, 0.12);
+}
+
+[data-theme="light"] .app-shell {
+  box-shadow: 0 0 0 0.5px rgba(0, 0, 0, 0.15),
+              0 2px 10px rgba(0, 0, 0, 0.06),
+              0 8px 30px rgba(0, 0, 0, 0.1);
+}
+
 :root {
   --bg-primary: #1a1b26;
   --bg-secondary: #16161e;

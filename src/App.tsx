@@ -89,7 +89,7 @@ export const App: Component = () => {
   });
 
   return (
-    <div class="h-screen w-screen flex flex-col overflow-hidden bg-[var(--color-bg-primary)] text-[var(--color-text-primary)] font-sans antialiased">
+    <div class="app-shell h-screen w-screen flex flex-col overflow-hidden bg-[var(--color-bg-primary)] text-[var(--color-text-primary)] font-sans antialiased">
       {/* Area 1: Top Custom Title Bar */}
       <TitleBar />
 
