@@ -30,6 +30,10 @@ pub fn run() {
             commands::fs::restore_from_trash,
             commands::fs::list_trash,
             commands::fs::empty_trash,
+            commands::index::get_file_backlinks,
+            commands::index::get_file_outlinks,
+            commands::index::list_workspace_tags,
+            commands::index::rebuild_workspace_index,
         ])
         .run(tauri::generate_context!())
         .expect("error while running Stackmynd application");
@@ -38,6 +42,10 @@ pub fn run() {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use models::db::{DbBlockRecord, DbLinkRecord};
+    use models::fs::FilePayload;
+    use models::workspace::WorkspaceMetadata;
+    use services::db::{connection, indexer, rebuild, schema};
     use std::fs;
     use std::path::Path;
 
@@ -74,7 +82,7 @@ mod tests {
         .unwrap();
 
         assert_eq!(payload.relative_path, "subfolder/test_note.md");
-        assert!(payload.hash_blake3.len() == 64);
+        assert_eq!(payload.hash_blake3.len(), 64);
 
         // Read back
         let read = services::fs_service::read_file(root, "subfolder/test_note.md").unwrap();
@@ -130,5 +138,129 @@ mod tests {
         assert!(registry.is_self_write(path));
         // Second check should be false because it was consumed
         assert!(!registry.is_self_write(path));
+    }
+
+    #[test]
+    fn test_sqlite_schema_and_indexer() {
+        let test_dir = tempfile::tempdir().unwrap();
+        let db_path = test_dir.path().join("index.db");
+
+        let mut conn = connection::open_db_at_path(&db_path).unwrap();
+        schema::initialize_schema(&conn).unwrap();
+
+        let ws_meta = WorkspaceMetadata {
+            id: "ws-123".to_string(),
+            name: "Test Workspace".to_string(),
+            path: test_dir.path().to_string_lossy().to_string(),
+            created_at: 1000,
+            last_opened_at: 1000,
+            version: "1.0.0".to_string(),
+        };
+        indexer::upsert_workspace(&conn, &ws_meta).unwrap();
+
+        let payload_a = FilePayload {
+            relative_path: "note_a.md".to_string(),
+            content: "# Note A\nLinks to [[note_b]]".to_string(),
+            size_bytes: 30,
+            mtime_ms: 1000,
+            hash_blake3: "hash_a".to_string(),
+        };
+        let file_a_id = indexer::upsert_file_record(&conn, "ws-123", &payload_a, None).unwrap();
+
+        let payload_b = FilePayload {
+            relative_path: "note_b.md".to_string(),
+            content: "# Note B\nTarget file".to_string(),
+            size_bytes: 20,
+            mtime_ms: 1000,
+            hash_blake3: "hash_b".to_string(),
+        };
+        let file_b_id = indexer::upsert_file_record(&conn, "ws-123", &payload_b, None).unwrap();
+
+        // Add blocks for A
+        let block_a = DbBlockRecord {
+            id: 0,
+            file_id: file_a_id,
+            block_id: "bk-0001".to_string(),
+            block_type: "heading".to_string(),
+            heading_level: Some(1),
+            start_line: 1,
+            end_line: 1,
+            start_char: 0,
+            end_char: 8,
+            content_hash: "hash_bk1".to_string(),
+            text_preview: "Note A".to_string(),
+            created_at: 1000,
+            updated_at: 1000,
+        };
+        indexer::replace_file_blocks(&mut conn, file_a_id, &[block_a]).unwrap();
+
+        // Add link from A to B
+        let link_a_to_b = DbLinkRecord {
+            id: 0,
+            source_file_id: file_a_id,
+            source_relative_path: "note_a.md".to_string(),
+            source_block_id: None,
+            target_relative_path: "note_b.md".to_string(),
+            target_file_id: Some(file_b_id),
+            target_block_id: None,
+            link_type: "wikilink".to_string(),
+            link_text: "note_b".to_string(),
+            line_number: 2,
+            is_broken: false,
+            created_at: 1000,
+        };
+        indexer::replace_file_links(&mut conn, file_a_id, &[link_a_to_b]).unwrap();
+
+        // Add tags to Note A
+        indexer::sync_file_tags(
+            &mut conn,
+            file_a_id,
+            &["#architecture".to_string(), "rust".to_string()],
+        )
+        .unwrap();
+
+        // Query backlinks for note_b.md
+        let backlinks = indexer::get_file_backlinks(&conn, "note_b.md").unwrap();
+        assert_eq!(backlinks.len(), 1);
+        assert_eq!(backlinks[0].source_file_path, "note_a.md");
+
+        // Query outlinks for note_a.md
+        let outlinks = indexer::get_file_outlinks(&conn, "note_a.md").unwrap();
+        assert_eq!(outlinks.len(), 1);
+        assert_eq!(outlinks[0].target_relative_path, "note_b.md");
+
+        // Query tags
+        let tags = indexer::list_tags(&conn).unwrap();
+        assert_eq!(tags.len(), 2);
+        assert_eq!(tags[0].name, "architecture");
+    }
+
+    #[test]
+    fn test_full_rebuild_pipeline() {
+        let test_dir = tempfile::tempdir().unwrap();
+        let root = test_dir.path();
+
+        let ws_meta = WorkspaceMetadata {
+            id: "ws-rebuild".to_string(),
+            name: "Rebuild WS".to_string(),
+            path: root.to_string_lossy().to_string(),
+            created_at: 1000,
+            last_opened_at: 1000,
+            version: "1.0.0".to_string(),
+        };
+
+        // Write some notes
+        services::fs_service::atomic_write_file(root, "first.md", "# First note").unwrap();
+        services::fs_service::atomic_write_file(root, "sub/second.md", "# Second note").unwrap();
+
+        // Trigger rebuild
+        rebuild::rebuild_workspace_index(root, &ws_meta).unwrap();
+
+        // Verify index.db exists and contains records
+        let conn = connection::open_db(root).unwrap();
+        let count: i64 = conn
+            .query_row("SELECT COUNT(*) FROM files;", [], |r| r.get(0))
+            .unwrap();
+        assert_eq!(count, 2);
     }
 }

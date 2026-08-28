@@ -10,7 +10,7 @@ This document tracks the phased implementation milestones, acceptance criteria, 
 | :--- | :--- | :--- | :--- |
 | **M1** | Project Scaffolding & Foundational Architecture | `v0.1.0` | ✅ Completed |
 | **M2** | Workspace Management, Atomic File I/O & Watcher Engine | `v0.2.0` | ✅ Completed |
-| **M3** | SQLite Ephemeral Index Layer & Schema Migrations | `v0.3.0` | ⚪ Not Started |
+| **M3** | SQLite Ephemeral Index Layer & Schema Migrations | `v0.3.0` | ✅ Completed |
 | **M4** | Markdown Lexer, Block Slicer & Link Repair Engine | `v0.4.0` | ⚪ Not Started |
 | **M5** | Native Tantivy Full-Text Search Engine | `v0.5.0` | ⚪ Not Started |
 | **M6** | 5-Area Spatial Grid & Navigation Shell | `v0.6.0` | ⚪ Not Started |
@@ -41,12 +41,12 @@ This document tracks the phased implementation milestones, acceptance criteria, 
   - [x] Typed TypeScript IPC wrappers (`src/lib/tauri/commands.ts`, `events.ts`).
 
 ### Milestone 3: SQLite Ephemeral Index Layer & Schema Migrations
-- **Status:** ⚪ Not Started
+- **Status:** ✅ Completed
 - **Key Deliverables:**
-  - [ ] Embedded SQLite engine with WAL mode and pragmas (`journal_mode = WAL`, `synchronous = NORMAL`, `foreign_keys = ON`).
-  - [ ] Table schema migrations: `workspaces`, `files`, `blocks`, `links`, `tags`, `file_tags`, `block_tags`, `recycle_bin`.
-  - [ ] Incremental synchronization engine with Blake3 hash checks and diff updates.
-  - [ ] Full workspace rebuild pipeline with atomic database swap (`index.db.rebuild` -> `index.db`).
+  - [x] Embedded SQLite engine with WAL mode and pragmas (`journal_mode = WAL`, `synchronous = NORMAL`, `foreign_keys = ON`).
+  - [x] Table schema migrations: `workspaces`, `files`, `blocks`, `links`, `tags`, `file_tags`, `block_tags`, `recycle_bin`.
+  - [x] Incremental synchronization engine with Blake3 hash checks and diff updates.
+  - [x] Full workspace rebuild pipeline with atomic database swap (`index.db.rebuild` -> `index.db`).
 
 ### Milestone 4: Markdown Lexer, Block Slicer & Link Repair Engine
 - **Status:** ⚪ Not Started
