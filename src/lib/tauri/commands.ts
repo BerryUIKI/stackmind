@@ -218,3 +218,23 @@ export async function insertBlockAnchor(relativePath: string, targetLine: number
 export async function repairLinksOnRename(oldPath: string, newPath: string): Promise<RepairedFileResult[]> {
   return await invoke<RepairedFileResult[]>("repair_links_on_rename", { oldPath, newPath });
 }
+
+export interface SearchResult {
+  path: string;
+  file_name: string;
+  title: string;
+  block_id: string | null;
+  block_type: string | null;
+  snippet: string;
+  score: number;
+  tags: string[];
+  is_block: boolean;
+}
+
+export async function searchWorkspace(query: string, limit?: number): Promise<SearchResult[]> {
+  return await invoke<SearchResult[]>("search_workspace", { query, limit });
+}
+
+export async function rebuildSearchIndex(): Promise<void> {
+  await invoke("rebuild_search_index");
+}

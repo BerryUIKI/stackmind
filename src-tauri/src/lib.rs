@@ -37,6 +37,8 @@ pub fn run() {
             commands::markdown::parse_document,
             commands::markdown::insert_block_anchor,
             commands::markdown::repair_links_on_rename,
+            commands::search::search_workspace,
+            commands::search::rebuild_search_index,
         ])
         .run(tauri::generate_context!())
         .expect("error while running Stackmynd application");
@@ -52,6 +54,7 @@ mod tests {
     use services::markdown::{
         block_anchor, block_parser, frontmatter, link_extractor, link_repair,
     };
+    use services::search::{engine, schema::SearchSchema};
     use std::fs;
     use std::path::Path;
 
@@ -345,5 +348,42 @@ mod tests {
             modified.content,
             "See [[new_name#^bk-123|Custom Alias]] for details."
         );
+    }
+
+    #[test]
+    fn test_tantivy_search_engine() {
+        let test_dir = tempfile::tempdir().unwrap();
+        let search_dir = test_dir.path().join("search_index");
+
+        let index = engine::open_or_create_index(&search_dir).unwrap();
+        let schema_def = SearchSchema::new();
+
+        let content = "# High Performance Systems\n\nStackmynd uses Tantivy for lightning fast local indexing.";
+        let doc = block_parser::parse_markdown_document(content);
+
+        let tags = vec!["systems".to_string(), "rust".to_string()];
+        engine::index_document(
+            &index,
+            &schema_def,
+            engine::DocumentToIndex {
+                relative_path: "systems.md",
+                title: "High Performance Systems",
+                content,
+                blocks: &doc.blocks,
+                tags: &tags,
+                mtime_ms: 1000,
+            },
+        )
+        .unwrap();
+
+        // Search general term
+        let results = engine::search(&index, &schema_def, "lightning", 10).unwrap();
+        assert!(!results.is_empty());
+        assert_eq!(results[0].path, "systems.md");
+        assert!(results[0].snippet.contains("lightning"));
+
+        // Search tag
+        let tag_results = engine::search(&index, &schema_def, "systems", 10).unwrap();
+        assert!(!tag_results.is_empty());
     }
 }

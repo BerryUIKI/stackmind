@@ -12,7 +12,7 @@ This document tracks the phased implementation milestones, acceptance criteria, 
 | **M2** | Workspace Management, Atomic File I/O & Watcher Engine | `v0.2.0` | ✅ Completed |
 | **M3** | SQLite Ephemeral Index Layer & Schema Migrations | `v0.3.0` | ✅ Completed |
 | **M4** | Markdown Lexer, Block Slicer & Link Repair Engine | `v0.4.0` | ✅ Completed |
-| **M5** | Native Tantivy Full-Text Search Engine | `v0.5.0` | ⚪ Not Started |
+| **M5** | Native Tantivy Full-Text Search Engine | `v0.5.0` | ✅ Completed |
 | **M6** | 5-Area Spatial Grid & Navigation Shell | `v0.6.0` | ⚪ Not Started |
 | **M7** | Tri-Mode Editor & Synchronized Split View | `v0.7.0` | ⚪ Not Started |
 | **M8** | Right Side Panel Inspector & Block Knowledge Graph | `v0.8.0` | ⚪ Not Started |
@@ -58,12 +58,12 @@ This document tracks the phased implementation milestones, acceptance criteria, 
   - [x] Global Link Repair Engine updating all inbound wikilinks upon file/folder rename or move.
 
 ### Milestone 5: Native Tantivy Full-Text Search Engine
-- **Status:** ⚪ Not Started
+- **Status:** ✅ Completed
 - **Key Deliverables:**
-  - [ ] Tantivy schema and index engine located at `.stackmynd/search_index/`.
-  - [ ] Background indexing queue worker with debounced segment commits.
-  - [ ] Query parser supporting boolean operators (`AND`, `OR`, `NOT`) and field scopes (`title:`, `path:`, `tag:`, `block:`).
-  - [ ] BM25 relevance ranking with boosting: title (3.0x), headings (2.2x), tags (2.0x), body (1.0x).
+  - [x] Tantivy schema and index engine located at `.stackmynd/search_index/`.
+  - [x] Background indexing queue worker with debounced segment commits.
+  - [x] Query parser supporting boolean operators (`AND`, `OR`, `NOT`) and field scopes (`title:`, `path:`, `tag:`, `block:`).
+  - [x] BM25 relevance ranking with boosting: title (3.0x), headings (2.2x), tags (2.0x), body (1.0x).
 
 ### Milestone 6: 5-Area Spatial Grid & Navigation Shell
 - **Status:** ⚪ Not Started
