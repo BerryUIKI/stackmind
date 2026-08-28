@@ -125,3 +125,48 @@ export async function listTrash(): Promise<TrashRecord[]> {
 export async function emptyTrash(): Promise<void> {
   await invoke("empty_trash");
 }
+
+export interface DbLinkRecord {
+  id: number;
+  source_file_id: number;
+  source_relative_path: string;
+  source_block_id: number | null;
+  target_relative_path: string;
+  target_file_id: number | null;
+  target_block_id: string | null;
+  link_type: string;
+  link_text: string;
+  line_number: number;
+  is_broken: boolean;
+  created_at: number;
+}
+
+export interface TagCount {
+  name: string;
+  count: number;
+}
+
+export interface BacklinkItem {
+  source_file_path: string;
+  source_file_name: string;
+  line_number: number;
+  link_text: string;
+  target_block_id: string | null;
+  context_snippet: string;
+}
+
+export async function getFileBacklinks(relativePath: string): Promise<BacklinkItem[]> {
+  return await invoke<BacklinkItem[]>("get_file_backlinks", { relativePath });
+}
+
+export async function getFileOutlinks(relativePath: string): Promise<DbLinkRecord[]> {
+  return await invoke<DbLinkRecord[]>("get_file_outlinks", { relativePath });
+}
+
+export async function listWorkspaceTags(): Promise<TagCount[]> {
+  return await invoke<TagCount[]>("list_workspace_tags");
+}
+
+export async function rebuildWorkspaceIndex(): Promise<void> {
+  await invoke("rebuild_workspace_index");
+}
