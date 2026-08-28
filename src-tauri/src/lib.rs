@@ -41,6 +41,13 @@ pub fn run() {
             commands::search::rebuild_search_index,
             commands::graph::get_workspace_graph_data,
             commands::graph::get_local_graph_data,
+            commands::git::git_status,
+            commands::git::git_diff,
+            commands::git::git_commit,
+            commands::git::git_log,
+            commands::git::git_list_branches,
+            commands::git::git_checkout_branch,
+            commands::git::git_create_branch,
         ])
         .run(tauri::generate_context!())
         .expect("error while running Stackmynd application");
@@ -464,5 +471,72 @@ mod tests {
         // Test local graph from note_a.md
         let local_graph = services::graph::service::get_local_graph(&conn, "note_a.md", 1).unwrap();
         assert_eq!(local_graph.nodes.len(), 2);
+    }
+
+    #[test]
+    fn test_git_service_lifecycle() {
+        let test_dir = tempfile::tempdir().unwrap();
+        let path = test_dir.path();
+
+        // 1. Initial status before git init
+        assert!(!services::git::service::is_git_repo(path));
+        let status = services::git::service::get_status(path).unwrap();
+        assert!(!status.is_repo);
+
+        // 2. Initialize git repo
+        std::process::Command::new("git")
+            .args(["init", "-b", "main"])
+            .current_dir(path)
+            .output()
+            .unwrap();
+        std::process::Command::new("git")
+            .args(["config", "user.name", "Test User"])
+            .current_dir(path)
+            .output()
+            .unwrap();
+        std::process::Command::new("git")
+            .args(["config", "user.email", "test@example.com"])
+            .current_dir(path)
+            .output()
+            .unwrap();
+
+        assert!(services::git::service::is_git_repo(path));
+
+        // 3. Create a note and check status
+        std::fs::write(path.join("note1.md"), "# Note 1\nHello Git!").unwrap();
+        let status = services::git::service::get_status(path).unwrap();
+        assert!(status.is_repo);
+        assert!(!status.clean);
+        assert_eq!(status.files.len(), 1);
+        assert_eq!(status.files[0].path, "note1.md");
+        assert_eq!(status.files[0].status, "untracked");
+
+        // 4. Test diff
+        let diff = services::git::service::get_diff(path, Some("note1.md")).unwrap();
+        assert!(diff.contains("+Hello Git!"));
+
+        // 5. Test commit
+        let commit_res = services::git::service::commit(path, "Initial commit", true).unwrap();
+        assert_eq!(commit_res.message, "Initial commit");
+        assert!(!commit_res.commit_hash.is_empty());
+
+        let status_after = services::git::service::get_status(path).unwrap();
+        assert!(status_after.clean);
+
+        // 6. Test log
+        let logs = services::git::service::get_log(path, Some(10)).unwrap();
+        assert_eq!(logs.len(), 1);
+        assert_eq!(logs[0].message, "Initial commit");
+        assert_eq!(logs[0].author, "Test User");
+
+        // 7. Test branch creation & checkout
+        services::git::service::create_branch(path, "feature-x").unwrap();
+        let branches = services::git::service::list_branches(path).unwrap();
+        assert_eq!(branches.current, "feature-x");
+        assert_eq!(branches.branches.len(), 2);
+
+        services::git::service::checkout_branch(path, "main").unwrap();
+        let branches_main = services::git::service::list_branches(path).unwrap();
+        assert_eq!(branches_main.current, "main");
     }
 }

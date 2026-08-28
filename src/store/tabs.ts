@@ -136,6 +136,31 @@ function createTabsStore() {
     );
   };
 
+  const reloadOpenTabs = async () => {
+    const list = tabs();
+    for (const t of list) {
+      if (!t.isDirty) {
+        try {
+          const payload = await readFile(t.path);
+          setTabs((prev) =>
+            prev.map((tab) =>
+              tab.path === t.path
+                ? {
+                    ...tab,
+                    content: payload.content,
+                    originalContent: payload.content,
+                    mtime: payload.mtime_ms,
+                  }
+                : tab
+            )
+          );
+        } catch {
+          // File may have been removed or moved
+        }
+      }
+    }
+  };
+
   return {
     tabs,
     activeTabPath,
@@ -147,6 +172,7 @@ function createTabsStore() {
     updateTabContent,
     saveActiveTab,
     updateCursorPosition,
+    reloadOpenTabs,
   };
 }
 
