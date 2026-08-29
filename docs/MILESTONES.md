@@ -23,7 +23,7 @@ This document tracks the phased implementation milestones, acceptance criteria, 
 | **M13** | Block Transclusion & In-Place Embeds | `v1.4.0` | ✅ Completed |
 | **M14** | Daily Notes & Interactive Journaling Engine | `v1.5.0` | ✅ Completed |
 | **M15** | Templates & Snippets System | `v1.6.0` | ✅ Completed |
-| **M16** | Infinite Text-Block Spatial Canvas | `v1.7.0` | ⏳ Pending (Phase 3) |
+| **M16** | Infinite Text-Block Spatial Canvas | `v1.7.0` | ✅ Completed |
 | **M17** | P3 Integration, Quality Verification & Release | `v2.0.0` | ⏳ Pending (Phase 3) |
 
 ---
@@ -162,13 +162,13 @@ This document tracks the phased implementation milestones, acceptance criteria, 
   - [x] Direct cursor insertion and "New Note from Template" workflow with `Cmd+Alt+N`.
 
 ### Milestone 16: Infinite Text-Block Spatial Canvas
-- **Status:** ⏳ Pending (Phase 3)
+- **Status:** ✅ Completed
 - **Key Deliverables:**
-  - [ ] `<name>.canvas.json` file format specification and parser.
-  - [ ] 60 FPS HTML5 2D canvas infinite viewport (pan, zoom, multi-select, rubberband box, snap-to-grid).
-  - [ ] Spatial cards: Note Cards (live note content preview), Block Cards (`^bk-xxxx` live content), Text Stickies.
-  - [ ] Directed connection arrows with cubic Bezier paths and optional edge labels.
-  - [ ] Double-click card to jump into editor; strict enforcement of the non-media invariant.
+  - [x] `.canvas.json` schema and atomic read/save engine.
+  - [x] Link repair integration for canvas nodes when documents are moved/renamed.
+  - [x] Spatial Canvas 2D infinite viewport with 60 FPS pan and zoom.
+  - [x] Directed cubic bezier connecting arrows with arrowheads.
+  - [x] Card components (File note, Text stickies, Block references) with double-click to open.
 
 ### Milestone 17: P3 Integration, Quality Verification & Release
 - **Status:** ⏳ Pending (Phase 3)

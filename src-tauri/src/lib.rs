@@ -53,6 +53,8 @@ pub fn run() {
             commands::daily::list_daily_notes,
             commands::templates::list_templates,
             commands::templates::apply_template,
+            commands::canvas::read_canvas,
+            commands::canvas::save_canvas,
         ])
         .run(tauri::generate_context!())
         .expect("error while running Stackmynd application");
@@ -708,5 +710,89 @@ This is about classical physics.
         assert!(applied.contains("# Functional Programming"));
         assert!(applied.contains("title: \"Functional Programming\""));
         assert!(applied.contains("📌 Definition & Core Idea"));
+    }
+
+    #[test]
+    fn test_canvas_lifecycle_and_repair() {
+        let test_dir = tempfile::tempdir().unwrap();
+        let ws_path = test_dir.path();
+        let registry = services::watcher_service::SelfWriteRegistry::new();
+
+        // 1. Create a dummy note
+        services::fs_service::create_file(
+            ws_path,
+            "architecture.md",
+            "# System Architecture\nCore design.",
+        )
+        .unwrap();
+
+        // 2. Build canvas data referencing architecture.md
+        let mut canvas_data = models::canvas::CanvasData::default();
+        canvas_data.nodes.push(models::canvas::CanvasNode {
+            id: "node-1".to_string(),
+            node_type: "file".to_string(),
+            x: 120.0,
+            y: 200.0,
+            width: 250.0,
+            height: 160.0,
+            file: Some("architecture.md".to_string()),
+            block_id: None,
+            text: None,
+            color: Some("indigo".to_string()),
+        });
+        canvas_data.nodes.push(models::canvas::CanvasNode {
+            id: "node-2".to_string(),
+            node_type: "text".to_string(),
+            x: 450.0,
+            y: 200.0,
+            width: 200.0,
+            height: 100.0,
+            file: None,
+            block_id: None,
+            text: Some("Annotation Note".to_string()),
+            color: None,
+        });
+        canvas_data.edges.push(models::canvas::CanvasEdge {
+            id: "edge-1".to_string(),
+            from_node: "node-1".to_string(),
+            from_side: Some("right".to_string()),
+            to_node: "node-2".to_string(),
+            to_side: Some("left".to_string()),
+            label: Some("Explains".to_string()),
+        });
+
+        // 3. Save canvas
+        services::canvas::CanvasService::save_canvas(
+            ws_path,
+            "system.canvas.json",
+            &canvas_data,
+            &registry,
+        )
+        .unwrap();
+
+        // 4. Read canvas back
+        let loaded =
+            services::canvas::CanvasService::read_canvas(ws_path, "system.canvas.json").unwrap();
+        assert_eq!(loaded.version, 1);
+        assert_eq!(loaded.nodes.len(), 2);
+        assert_eq!(loaded.edges.len(), 1);
+        assert_eq!(loaded.nodes[0].file, Some("architecture.md".to_string()));
+
+        // 5. Test automatic link repair when note is moved/renamed
+        let repaired = services::canvas::CanvasService::repair_canvas_links(
+            ws_path,
+            "architecture.md",
+            "docs/architecture_v2.md",
+            &registry,
+        )
+        .unwrap();
+        assert_eq!(repaired, 1);
+
+        let after_repair =
+            services::canvas::CanvasService::read_canvas(ws_path, "system.canvas.json").unwrap();
+        assert_eq!(
+            after_repair.nodes[0].file,
+            Some("docs/architecture_v2.md".to_string())
+        );
     }
 }
