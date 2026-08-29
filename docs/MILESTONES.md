@@ -20,6 +20,11 @@ This document tracks the phased implementation milestones, acceptance criteria, 
 | **M10** | Force-Directed Knowledge Graph Visualizer | `v1.1.0` | ✅ Completed |
 | **M11** | Embedded Git Version Control Engine | `v1.2.0` | ✅ Completed |
 | **M12** | P2 Integration, Polish & Quality Verification | `v1.3.0` | ✅ Completed |
+| **M13** | Block Transclusion & In-Place Embeds | `v1.4.0` | ⏳ Pending (Phase 3) |
+| **M14** | Daily Notes & Interactive Journaling Engine | `v1.5.0` | ⏳ Pending (Phase 3) |
+| **M15** | Templates & Snippets System | `v1.6.0` | ⏳ Pending (Phase 3) |
+| **M16** | Infinite Text-Block Spatial Canvas | `v1.7.0` | ⏳ Pending (Phase 3) |
+| **M17** | P3 Integration, Quality Verification & Release | `v2.0.0` | ⏳ Pending (Phase 3) |
 
 ---
 
@@ -128,3 +133,47 @@ This document tracks the phased implementation milestones, acceptance criteria, 
   - [x] File watcher auto-refresh on Git branch checkout and graph topology changes.
   - [x] Complete test suite execution (`cargo test`, `cargo clippy`, `pnpm tsc --noEmit`, `pnpm test`, `pnpm build`).
   - [x] Phase 2 documentation freeze and verification report.
+
+### Milestone 13: Block Transclusion & In-Place Embeds
+- **Status:** ⏳ Pending (Phase 3)
+- **Key Deliverables:**
+  - [ ] Remark AST plugin parsing `![[note]]`, `![[note#^bk-xxxx]]`, and `![[note#Heading]]`.
+  - [ ] Rust backend IPC command `resolve_transclusion`.
+  - [ ] Circular dependency detection and 3-level recursion depth limit.
+  - [ ] Frontend `<TransclusionContainer />` rendering with live Preview, source jump link, and copy reference button.
+  - [ ] Automated link repair updates for transclusion syntax.
+
+### Milestone 14: Daily Notes & Interactive Journaling Engine
+- **Status:** ⏳ Pending (Phase 3)
+- **Key Deliverables:**
+  - [ ] `.stackmynd/workspace.json` daily notes configuration schema.
+  - [ ] Rust backend `get_or_create_daily_note` and `list_daily_notes` commands.
+  - [ ] Sidebar collapsible mini-calendar widget with note existence dots.
+  - [ ] Global shortcut `Cmd+Shift+D` to open/create today's note.
+  - [ ] Sequential temporal navigation arrows (`◀ Yesterday`, `Tomorrow ▶`) in document header.
+
+### Milestone 15: Templates & Snippets System
+- **Status:** ⏳ Pending (Phase 3)
+- **Key Deliverables:**
+  - [ ] `.stackmynd/templates/` storage and starter templates (`daily.md`, `meeting.md`, `concept.md`, `literature.md`).
+  - [ ] Handlebar variable interpolation engine (`{{date}}`, `{{time}}`, `{{title}}`, `{{weekday}}`, `{{yesterday}}`, `{{tomorrow}}`, `{{uuid}}`).
+  - [ ] Rust backend `list_templates` and `apply_template` commands.
+  - [ ] Command Palette (`Cmd+K`) "Insert Template" action and New Note from Template modal (`Cmd+Alt+N`).
+
+### Milestone 16: Infinite Text-Block Spatial Canvas
+- **Status:** ⏳ Pending (Phase 3)
+- **Key Deliverables:**
+  - [ ] `<name>.canvas.json` file format specification and parser.
+  - [ ] 60 FPS HTML5 2D canvas infinite viewport (pan, zoom, multi-select, rubberband box, snap-to-grid).
+  - [ ] Spatial cards: Note Cards (live note content preview), Block Cards (`^bk-xxxx` live content), Text Stickies.
+  - [ ] Directed connection arrows with cubic Bezier paths and optional edge labels.
+  - [ ] Double-click card to jump into editor; strict enforcement of the non-media invariant.
+
+### Milestone 17: P3 Integration, Quality Verification & Release
+- **Status:** ⏳ Pending (Phase 3)
+- **Key Deliverables:**
+  - [ ] End-to-end integration across Transclusions, Daily Notes, Templates, and Canvas.
+  - [ ] Full 6-step QA verification suite passing (`cargo test`, `cargo clippy`, `cargo fmt`, `pnpm tsc`, `pnpm test`, `pnpm build`).
+  - [ ] Production package build verification via `pnpm tauri build --bundles app`.
+  - [ ] Documentation freeze and `v2.0.0` release preparation.
+
