@@ -338,4 +338,26 @@ export async function gitCreateBranch(branchName: string): Promise<void> {
   await invoke("git_create_branch", { branchName });
 }
 
+export interface TransclusionPayload {
+  resolved_path: string;
+  title: string;
+  block_id: string | null;
+  heading: string | null;
+  content: string;
+  exists: boolean;
+  is_circular: boolean;
+}
+
+export async function resolveTransclusion(
+  targetPath: string,
+  blockId?: string,
+  heading?: string
+): Promise<TransclusionPayload> {
+  return await invoke<TransclusionPayload>("resolve_transclusion", {
+    targetPath,
+    blockId,
+    heading,
+  });
+}
+
 

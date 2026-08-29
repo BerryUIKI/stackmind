@@ -48,6 +48,7 @@ pub fn run() {
             commands::git::git_list_branches,
             commands::git::git_checkout_branch,
             commands::git::git_create_branch,
+            commands::transclusion::resolve_transclusion,
         ])
         .run(tauri::generate_context!())
         .expect("error while running Stackmynd application");
@@ -538,5 +539,87 @@ mod tests {
         services::git::service::checkout_branch(path, "main").unwrap();
         let branches_main = services::git::service::list_branches(path).unwrap();
         assert_eq!(branches_main.current, "main");
+    }
+
+    #[test]
+    fn test_transclusion_resolution() {
+        let test_dir = tempfile::tempdir().unwrap();
+        let ws_path = test_dir.path();
+
+        // Create a target note with frontmatter, headings, and anchored blocks
+        let note_content = r#"---
+title: Source Note
+tags: [math, logic]
+---
+
+# Introduction
+This is the introduction paragraph.
+
+## Quantum Entanglement
+Quantum entanglement is a physical phenomenon. ^bk-qent
+
+Here is another paragraph after the block.
+
+## Classical Mechanics
+This is about classical physics.
+"#;
+        std::fs::write(ws_path.join("source.md"), note_content).unwrap();
+
+        // 1. Test full document transclusion (frontmatter stripped)
+        let doc_res = services::transclusion::TransclusionService::resolve_transclusion(
+            ws_path, "source", None, None,
+        )
+        .unwrap();
+        assert!(doc_res.exists);
+        assert!(!doc_res.content.contains("title: Source Note"));
+        assert!(doc_res.content.contains("# Introduction"));
+        assert!(
+            doc_res
+                .content
+                .contains("Quantum entanglement is a physical phenomenon.")
+        );
+
+        // 2. Test block transclusion with ^bk-qent
+        let block_res = services::transclusion::TransclusionService::resolve_transclusion(
+            ws_path,
+            "source",
+            Some("^bk-qent"),
+            None,
+        )
+        .unwrap();
+        assert!(block_res.exists);
+        assert_eq!(block_res.block_id, Some("bk-qent".to_string()));
+        assert!(
+            block_res
+                .content
+                .contains("Quantum entanglement is a physical phenomenon.")
+        );
+        assert!(!block_res.content.contains("^bk-qent")); // anchor stripped
+
+        // 3. Test heading section transclusion
+        let heading_res = services::transclusion::TransclusionService::resolve_transclusion(
+            ws_path,
+            "source",
+            None,
+            Some("Quantum Entanglement"),
+        )
+        .unwrap();
+        assert!(heading_res.exists);
+        assert!(
+            heading_res
+                .content
+                .contains("Quantum entanglement is a physical phenomenon.")
+        );
+        assert!(!heading_res.content.contains("Classical Mechanics")); // stopped at next heading of equal level
+
+        // 4. Test non-existent file
+        let not_found = services::transclusion::TransclusionService::resolve_transclusion(
+            ws_path,
+            "does_not_exist",
+            None,
+            None,
+        )
+        .unwrap();
+        assert!(!not_found.exists);
     }
 }
