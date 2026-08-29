@@ -5,4 +5,5 @@ pub mod index;
 pub mod markdown;
 pub mod ping;
 pub mod search;
+pub mod transclusion;
 pub mod workspace;

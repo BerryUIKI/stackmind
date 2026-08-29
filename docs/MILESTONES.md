@@ -20,7 +20,7 @@ This document tracks the phased implementation milestones, acceptance criteria, 
 | **M10** | Force-Directed Knowledge Graph Visualizer | `v1.1.0` | ✅ Completed |
 | **M11** | Embedded Git Version Control Engine | `v1.2.0` | ✅ Completed |
 | **M12** | P2 Integration, Polish & Quality Verification | `v1.3.0` | ✅ Completed |
-| **M13** | Block Transclusion & In-Place Embeds | `v1.4.0` | ⏳ Pending (Phase 3) |
+| **M13** | Block Transclusion & In-Place Embeds | `v1.4.0` | ✅ Completed |
 | **M14** | Daily Notes & Interactive Journaling Engine | `v1.5.0` | ⏳ Pending (Phase 3) |
 | **M15** | Templates & Snippets System | `v1.6.0` | ⏳ Pending (Phase 3) |
 | **M16** | Infinite Text-Block Spatial Canvas | `v1.7.0` | ⏳ Pending (Phase 3) |
@@ -135,13 +135,13 @@ This document tracks the phased implementation milestones, acceptance criteria, 
   - [x] Phase 2 documentation freeze and verification report.
 
 ### Milestone 13: Block Transclusion & In-Place Embeds
-- **Status:** ⏳ Pending (Phase 3)
+- **Status:** ✅ Completed
 - **Key Deliverables:**
-  - [ ] Remark AST plugin parsing `![[note]]`, `![[note#^bk-xxxx]]`, and `![[note#Heading]]`.
-  - [ ] Rust backend IPC command `resolve_transclusion`.
-  - [ ] Circular dependency detection and 3-level recursion depth limit.
-  - [ ] Frontend `<TransclusionContainer />` rendering with live Preview, source jump link, and copy reference button.
-  - [ ] Automated link repair updates for transclusion syntax.
+  - [x] Remark AST plugin parsing `![[note]]`, `![[note#^bk-xxxx]]`, and `![[note#Heading]]`.
+  - [x] Rust backend IPC command `resolve_transclusion`.
+  - [x] Circular dependency detection and 3-level recursion depth limit.
+  - [x] Frontend `<TransclusionContainer />` rendering with live Preview, source jump link, and copy reference button.
+  - [x] Automated link repair updates for transclusion syntax.
 
 ### Milestone 14: Daily Notes & Interactive Journaling Engine
 - **Status:** ⏳ Pending (Phase 3)

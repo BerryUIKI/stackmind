@@ -34,8 +34,35 @@ export async function renderMarkdownToHtml(markdown: string): Promise<string> {
     }
   });
 
-  // 3. Process Wikilinks [[target#^blockid|alias]] or [[target|alias]] or [[target]]
-  processed = processed.replace(/\[\[([^\]|#]+)(?:#(?:\^)?([^\]|]+))?(?:\|([^\]]+))?\]\]/g, (_, target, fragment, alias) => {
+  // 3. Process Transclusions ![[target#^blockid|alias]] or ![[target#Heading]] or ![[target]]
+  processed = processed.replace(/!\[\[([^\]|#]+)(?:#(?:\^)?([^\]|]+))?(?:\|([^\]]+))?\]\]/g, (_, target, fragment, alias) => {
+    const isBlock = fragment && (fragment.startsWith("bk-") || fragment.startsWith("^bk-"));
+    const cleanFrag = fragment ? fragment.replace(/^\^/, "").trim() : "";
+    const label = alias ? alias.trim() : (target.trim() + (cleanFrag ? ` > ${cleanFrag}` : ""));
+    const blockAttr = isBlock ? ` data-block-id="${cleanFrag}"` : "";
+    const headingAttr = (!isBlock && cleanFrag) ? ` data-heading="${cleanFrag}"` : "";
+
+    return `<div class="transclusion-embed my-3 rounded-lg border border-[var(--color-border)] border-l-4 border-l-indigo-500 bg-[var(--color-bg-secondary)] overflow-hidden" data-target="${target.trim()}"${blockAttr}${headingAttr} data-transclusion-state="pending">
+      <div class="transclusion-header flex items-center justify-between px-3 py-1.5 bg-[var(--color-bg-tertiary)] border-b border-[var(--color-border)] text-xs text-[var(--color-text-muted)] select-none">
+        <div class="flex items-center space-x-1.5 font-medium text-[var(--color-text-primary)] truncate">
+          <span class="text-indigo-400">⎘</span>
+          <span class="truncate">${label}</span>
+        </div>
+        <div class="flex items-center space-x-2 shrink-0">
+          <button type="button" class="transclusion-jump-btn text-[11px] text-indigo-400 hover:text-indigo-300 hover:underline cursor-pointer flex items-center space-x-1" data-target="${target.trim()}"${blockAttr}>
+            <span>Jump</span>
+            <span>↗</span>
+          </button>
+        </div>
+      </div>
+      <div class="transclusion-content p-3 text-xs text-[var(--color-text-secondary)] leading-relaxed">
+        <span class="text-xs text-[var(--color-text-muted)] animate-pulse">Loading embed...</span>
+      </div>
+    </div>`;
+  });
+
+  // 4. Process Wikilinks [[target#^blockid|alias]] or [[target|alias]] or [[target]]
+  processed = processed.replace(/(?<!\!)\[\[([^\]|#]+)(?:#(?:\^)?([^\]|]+))?(?:\|([^\]]+))?\]\]/g, (_, target, fragment, alias) => {
     const label = alias ? alias.trim() : (target.trim() + (fragment ? ` > ${fragment.trim()}` : ""));
     const blockAttr = fragment ? ` data-block-id="${fragment.trim()}"` : "";
     return `<a href="#" class="wikilink text-indigo-400 hover:text-indigo-300 underline font-medium cursor-pointer" data-target="${target.trim()}"${blockAttr}>${label}</a>`;

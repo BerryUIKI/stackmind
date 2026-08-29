@@ -45,4 +45,13 @@ describe("Markdown Renderer", () => {
     expect(html).toContain('<div class="mermaid');
     expect(html).toContain("graph TD;");
   });
+
+  it("renders block and document transclusions into transclusion-embed containers", async () => {
+    const md = "Here is an embed:\n\n![[physics/quantum#^bk-qent|Quantum Phenomenon]]";
+    const html = await renderMarkdownToHtml(md);
+    expect(html).toContain('class="transclusion-embed');
+    expect(html).toContain('data-target="physics/quantum"');
+    expect(html).toContain('data-block-id="bk-qent"');
+    expect(html).toContain("Quantum Phenomenon");
+  });
 });
