@@ -360,4 +360,25 @@ export async function resolveTransclusion(
   });
 }
 
+export interface DailyNoteEntry {
+  date: string;
+  relative_path: string;
+  word_count: number;
+}
+
+export interface DailyNoteResult {
+  relative_path: string;
+  date: string;
+  is_new: boolean;
+  content: string;
+}
+
+export async function getOrCreateDailyNote(date?: string): Promise<DailyNoteResult> {
+  return await invoke<DailyNoteResult>("get_or_create_daily_note", { date });
+}
+
+export async function listDailyNotes(): Promise<DailyNoteEntry[]> {
+  return await invoke<DailyNoteEntry[]>("list_daily_notes");
+}
+
 

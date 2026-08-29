@@ -1,3 +1,4 @@
+pub mod daily;
 pub mod db;
 pub mod fs;
 pub mod git;

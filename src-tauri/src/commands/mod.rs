@@ -1,3 +1,4 @@
+pub mod daily;
 pub mod fs;
 pub mod git;
 pub mod graph;
