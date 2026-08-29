@@ -16,6 +16,7 @@ import { WorkspaceModal } from "@/components/modals/WorkspaceModal";
 import { SearchModal } from "@/components/modals/SearchModal";
 import { GlobalGraphModal } from "@/components/graph/GlobalGraphModal";
 import { GitModal } from "@/components/git/GitModal";
+import { TemplateModal } from "@/components/modals/TemplateModal";
 import { SynchronizedEditor } from "@/components/editor/SynchronizedEditor";
 
 export const App: Component = () => {
@@ -76,6 +77,9 @@ export const App: Component = () => {
       } else if (isCmdOrCtrl && e.shiftKey && e.key.toLowerCase() === "d") {
         e.preventDefault();
         getOrCreateDailyNote().then((res) => tabsStore.openTab(res.relative_path));
+      } else if (isCmdOrCtrl && e.altKey && e.key.toLowerCase() === "n") {
+        e.preventDefault();
+        uiStore.setTemplateModalOpen(true);
       } else if (isCmdOrCtrl && e.key.toLowerCase() === "n") {
         e.preventDefault();
         const name = prompt("Enter note name:", "Untitled");
@@ -158,6 +162,7 @@ export const App: Component = () => {
       <SearchModal />
       <GlobalGraphModal />
       <GitModal />
+      <TemplateModal />
     </div>
   );
 };

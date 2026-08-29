@@ -5,6 +5,7 @@ pub mod git;
 pub mod graph;
 pub mod markdown;
 pub mod search;
+pub mod templates;
 pub mod transclusion;
 pub mod watcher_service;
 pub mod workspace_service;

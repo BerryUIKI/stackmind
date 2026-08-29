@@ -22,7 +22,7 @@ This document tracks the phased implementation milestones, acceptance criteria, 
 | **M12** | P2 Integration, Polish & Quality Verification | `v1.3.0` | ✅ Completed |
 | **M13** | Block Transclusion & In-Place Embeds | `v1.4.0` | ✅ Completed |
 | **M14** | Daily Notes & Interactive Journaling Engine | `v1.5.0` | ✅ Completed |
-| **M15** | Templates & Snippets System | `v1.6.0` | ⏳ Pending (Phase 3) |
+| **M15** | Templates & Snippets System | `v1.6.0` | ✅ Completed |
 | **M16** | Infinite Text-Block Spatial Canvas | `v1.7.0` | ⏳ Pending (Phase 3) |
 | **M17** | P3 Integration, Quality Verification & Release | `v2.0.0` | ⏳ Pending (Phase 3) |
 
@@ -153,12 +153,13 @@ This document tracks the phased implementation milestones, acceptance criteria, 
   - [x] Sequential temporal navigation arrows (`◀ Yesterday`, `Tomorrow ▶`) in document header.
 
 ### Milestone 15: Templates & Snippets System
-- **Status:** ⏳ Pending (Phase 3)
+- **Status:** ✅ Completed
 - **Key Deliverables:**
-  - [ ] `.stackmynd/templates/` storage and starter templates (`daily.md`, `meeting.md`, `concept.md`, `literature.md`).
-  - [ ] Handlebar variable interpolation engine (`{{date}}`, `{{time}}`, `{{title}}`, `{{weekday}}`, `{{yesterday}}`, `{{tomorrow}}`, `{{uuid}}`).
-  - [ ] Rust backend `list_templates` and `apply_template` commands.
-  - [ ] Command Palette (`Cmd+K`) "Insert Template" action and New Note from Template modal (`Cmd+Alt+N`).
+  - [x] Template metadata schema & directory provisioning (`.stackmynd/templates/`).
+  - [x] Rust backend `list_templates` and `apply_template` commands.
+  - [x] Template selector & live preview modal (`TemplateModal.tsx`).
+  - [x] Variable interpolation engine (`{{date}}`, `{{title}}`, `{{weekday}}`, `{{yesterday}}`, `{{tomorrow}}`, `{{uuid}}`).
+  - [x] Direct cursor insertion and "New Note from Template" workflow with `Cmd+Alt+N`.
 
 ### Milestone 16: Infinite Text-Block Spatial Canvas
 - **Status:** ⏳ Pending (Phase 3)

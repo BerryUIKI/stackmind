@@ -20,6 +20,7 @@ function createUIStore() {
   const [workspaceModalOpen, setWorkspaceModalOpen] = createSignal<boolean>(false);
   const [graphModalOpen, setGraphModalOpen] = createSignal<boolean>(false);
   const [gitModalOpen, setGitModalOpen] = createSignal<boolean>(false);
+  const [templateModalOpen, setTemplateModalOpen] = createSignal<boolean>(false);
 
   const toggleSidebar = () => setSidebarCollapsed(!sidebarCollapsed());
   const toggleInspector = () => setInspectorCollapsed(!inspectorCollapsed());
@@ -75,6 +76,8 @@ function createUIStore() {
     setGraphModalOpen,
     gitModalOpen,
     setGitModalOpen,
+    templateModalOpen,
+    setTemplateModalOpen,
   };
 }
 

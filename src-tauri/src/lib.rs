@@ -51,6 +51,8 @@ pub fn run() {
             commands::transclusion::resolve_transclusion,
             commands::daily::get_or_create_daily_note,
             commands::daily::list_daily_notes,
+            commands::templates::list_templates,
+            commands::templates::apply_template,
         ])
         .run(tauri::generate_context!())
         .expect("error while running Stackmynd application");
@@ -674,5 +676,37 @@ This is about classical physics.
         assert!(interpolated.contains("Yesterday was 2026-08-28"));
         assert!(interpolated.contains("tomorrow is 2026-08-30"));
         assert!(!interpolated.contains("{{uuid}}"));
+    }
+
+    #[test]
+    fn test_template_service_lifecycle() {
+        let test_dir = tempfile::tempdir().unwrap();
+        let ws_path = test_dir.path();
+
+        // 1. Calling list_templates on fresh workspace should auto-provision 4 starter templates
+        let templates = services::templates::TemplateService::list_templates(ws_path).unwrap();
+        assert_eq!(templates.len(), 4);
+
+        let names: Vec<&str> = templates.iter().map(|t| t.name.as_str()).collect();
+        assert!(names.contains(&"daily"));
+        assert!(names.contains(&"meeting"));
+        assert!(names.contains(&"concept"));
+        assert!(names.contains(&"literature"));
+
+        // 2. Verify descriptions were extracted
+        let meeting = templates.iter().find(|t| t.name == "meeting").unwrap();
+        assert!(meeting.description.is_some());
+
+        // 3. Apply concept template
+        let applied = services::templates::TemplateService::apply_template(
+            ws_path,
+            "concept",
+            "Functional Programming",
+        )
+        .unwrap();
+
+        assert!(applied.contains("# Functional Programming"));
+        assert!(applied.contains("title: \"Functional Programming\""));
+        assert!(applied.contains("📌 Definition & Core Idea"));
     }
 }

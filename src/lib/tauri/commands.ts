@@ -381,4 +381,22 @@ export async function listDailyNotes(): Promise<DailyNoteEntry[]> {
   return await invoke<DailyNoteEntry[]>("list_daily_notes");
 }
 
+export interface TemplateMetadata {
+  name: string;
+  relative_path: string;
+  description: string | null;
+  content: string;
+}
+
+export async function listTemplates(): Promise<TemplateMetadata[]> {
+  return await invoke<TemplateMetadata[]>("list_templates");
+}
+
+export async function applyTemplate(
+  templatePath: string,
+  noteTitle: string
+): Promise<string> {
+  return await invoke<string>("apply_template", { templatePath, noteTitle });
+}
+
 
