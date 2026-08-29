@@ -24,7 +24,7 @@ This document tracks the phased implementation milestones, acceptance criteria, 
 | **M14** | Daily Notes & Interactive Journaling Engine | `v1.5.0` | ✅ Completed |
 | **M15** | Templates & Snippets System | `v1.6.0` | ✅ Completed |
 | **M16** | Infinite Text-Block Spatial Canvas | `v1.7.0` | ✅ Completed |
-| **M17** | P3 Integration, Quality Verification & Release | `v2.0.0` | ⏳ Pending (Phase 3) |
+| **M17** | P3 Integration, Quality Verification & Release | `v2.0.0` | ✅ Completed |
 
 ---
 
@@ -171,10 +171,9 @@ This document tracks the phased implementation milestones, acceptance criteria, 
   - [x] Card components (File note, Text stickies, Block references) with double-click to open.
 
 ### Milestone 17: P3 Integration, Quality Verification & Release
-- **Status:** ⏳ Pending (Phase 3)
+- **Status:** ✅ Completed
 - **Key Deliverables:**
-  - [ ] End-to-end integration across Transclusions, Daily Notes, Templates, and Canvas.
-  - [ ] Full 6-step QA verification suite passing (`cargo test`, `cargo clippy`, `cargo fmt`, `pnpm tsc`, `pnpm test`, `pnpm build`).
-  - [ ] Production package build verification via `pnpm tauri build --bundles app`.
-  - [ ] Documentation freeze and `v2.0.0` release preparation.
-
+  - [x] Full Phase 3 end-to-end integration across transclusion, daily notes, templates, and spatial canvas.
+  - [x] Strict invariant verification (source of truth on disk, non-media scope, atomic file write, self-write suppression).
+  - [x] Full automated test pass (`cargo test`, `cargo clippy`, `cargo fmt`, `pnpm tsc`, `pnpm test`, `pnpm build`).
+  - [x] Version bump and release preparation for `v2.0.0`.
