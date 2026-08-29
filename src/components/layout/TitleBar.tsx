@@ -2,6 +2,7 @@ import { Component, Show, createSignal, onMount } from "solid-js";
 import { getCurrentWindow } from "@tauri-apps/api/window";
 import { uiStore, EditorMode } from "@/store/ui";
 import { workspaceStore } from "@/store/workspace";
+import { CalendarWidget } from "./CalendarWidget";
 
 export const TitleBar: Component = () => {
   const currentWorkspace = () => workspaceStore.activeWorkspace();
@@ -243,6 +244,9 @@ export const TitleBar: Component = () => {
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
           </svg>
         </button>
+
+        {/* Daily Notes & Calendar Popover Icon */}
+        <CalendarWidget />
 
         {/* Theme Toggle */}
         <button

@@ -3,7 +3,6 @@ import { uiStore } from "@/store/ui";
 import { workspaceStore } from "@/store/workspace";
 import { tabsStore } from "@/store/tabs";
 import { FileTree } from "./FileTree";
-import { CalendarWidget } from "./CalendarWidget";
 
 export const Sidebar: Component = () => {
   const handleNewNote = async () => {
@@ -57,9 +56,6 @@ export const Sidebar: Component = () => {
           </button>
         </div>
       </div>
-
-      {/* Calendar Navigation Widget */}
-      <CalendarWidget />
 
       {/* Filter Tree Search Input */}
       <div class="px-2 py-1.5 border-b border-[var(--color-border)]">

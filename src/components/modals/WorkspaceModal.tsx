@@ -1,10 +1,35 @@
 import { Component, For, Show, createSignal } from "solid-js";
+import { open as openDialog } from "@tauri-apps/plugin-dialog";
 import { uiStore } from "@/store/ui";
 import { workspaceStore } from "@/store/workspace";
 
 export const WorkspaceModal: Component = () => {
   const [inputPath, setInputPath] = createSignal("");
   const [inputName, setInputName] = createSignal("");
+
+  const handleBrowseFolder = async () => {
+    try {
+      const selected = await openDialog({
+        directory: true,
+        multiple: false,
+        title: "Select Workspace Folder",
+      });
+      if (selected && typeof selected === "string") {
+        setInputPath(selected);
+        if (!inputName()) {
+          const parts = selected.replace(/\/+$/, "").split("/");
+          const baseName = parts.pop() || "Workspace";
+          setInputName(baseName);
+        }
+      }
+    } catch (err) {
+      console.warn("Folder picker error or running in non-Tauri:", err);
+      const fallback = prompt("Enter directory path:", inputPath() || "");
+      if (fallback && fallback.trim()) {
+        setInputPath(fallback.trim());
+      }
+    }
+  };
 
   const handleOpenExisting = async (path: string, name?: string) => {
     await workspaceStore.openWorkspace(path, name);
@@ -90,22 +115,44 @@ export const WorkspaceModal: Component = () => {
 
             {/* Open / Create Workspace by Path */}
             <form onSubmit={handleCreateOrOpen} class="pt-3 border-t border-[var(--color-border)] space-y-3">
-              <span class="text-[10px] font-bold uppercase tracking-wider text-[var(--color-text-muted)]">
-                Open Directory as Workspace
-              </span>
+              <div class="flex items-center justify-between">
+                <span class="text-[10px] font-bold uppercase tracking-wider text-[var(--color-text-muted)]">
+                  Open Directory as Workspace
+                </span>
+                <button
+                  type="button"
+                  onClick={handleBrowseFolder}
+                  class="flex items-center space-x-1 px-2 py-0.5 rounded bg-[var(--color-bg-tertiary)] hover:bg-[var(--color-bg-hover)] text-indigo-400 font-medium text-[11px] cursor-pointer transition-colors"
+                >
+                  <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
+                  </svg>
+                  <span>Browse Folder...</span>
+                </button>
+              </div>
 
               <div>
                 <label class="block text-[11px] text-[var(--color-text-muted)] mb-1">
                   Directory Path:
                 </label>
-                <input
-                  type="text"
-                  placeholder="/Users/username/MyNotes"
-                  value={inputPath()}
-                  onInput={(e) => setInputPath(e.currentTarget.value)}
-                  class="w-full px-2.5 py-1.5 rounded bg-[var(--color-bg-primary)] border border-[var(--color-border)] text-[var(--color-text-primary)] placeholder-[var(--color-text-muted)] focus:outline-hidden focus:border-[var(--color-accent)]"
-                  required
-                />
+                <div class="flex items-center space-x-1.5">
+                  <input
+                    type="text"
+                    placeholder="/Users/username/MyNotes"
+                    value={inputPath()}
+                    onInput={(e) => setInputPath(e.currentTarget.value)}
+                    class="flex-1 px-2.5 py-1.5 rounded bg-[var(--color-bg-primary)] border border-[var(--color-border)] text-[var(--color-text-primary)] placeholder-[var(--color-text-muted)] focus:outline-hidden focus:border-[var(--color-accent)]"
+                    required
+                  />
+                  <button
+                    type="button"
+                    onClick={handleBrowseFolder}
+                    class="px-2.5 py-1.5 rounded border border-[var(--color-border)] bg-[var(--color-bg-tertiary)] hover:bg-[var(--color-bg-hover)] text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] cursor-pointer transition-colors"
+                    title="Select folder from file manager"
+                  >
+                    📂
+                  </button>
+                </div>
               </div>
 
               <div>
