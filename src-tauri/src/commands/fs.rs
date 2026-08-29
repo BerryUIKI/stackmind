@@ -73,7 +73,14 @@ pub fn rename_path(
     state: State<'_, AppState>,
 ) -> Result<(), String> {
     let root = get_workspace_root(&state)?;
-    fs_service::rename_path(&root, &old_relative_path, &new_relative_path)
+    fs_service::rename_path(&root, &old_relative_path, &new_relative_path)?;
+    let _ = crate::services::canvas::CanvasService::repair_canvas_links(
+        &root,
+        &old_relative_path,
+        &new_relative_path,
+        &state.self_write_registry,
+    );
+    Ok(())
 }
 
 #[tauri::command]

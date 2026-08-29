@@ -18,6 +18,7 @@ import { GlobalGraphModal } from "@/components/graph/GlobalGraphModal";
 import { GitModal } from "@/components/git/GitModal";
 import { TemplateModal } from "@/components/modals/TemplateModal";
 import { SynchronizedEditor } from "@/components/editor/SynchronizedEditor";
+import { SpatialCanvas } from "@/components/canvas/SpatialCanvas";
 
 export const App: Component = () => {
   let unlistenWatcher: (() => void) | null = null;
@@ -138,8 +139,13 @@ export const App: Component = () => {
                 </div>
               }
             >
-              {/* Note Content Viewport: Full Tri-Mode Synchronized Editor */}
-              <SynchronizedEditor />
+              {/* Viewport: Spatial Canvas or Full Tri-Mode Synchronized Editor */}
+              <Show
+                when={tabsStore.getActiveTab()?.path.endsWith(".canvas.json")}
+                fallback={<SynchronizedEditor />}
+              >
+                <SpatialCanvas path={tabsStore.getActiveTab()!.path} />
+              </Show>
             </Show>
           </div>
         </main>

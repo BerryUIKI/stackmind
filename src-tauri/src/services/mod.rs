@@ -1,3 +1,4 @@
+pub mod canvas;
 pub mod daily;
 pub mod db;
 pub mod fs_service;

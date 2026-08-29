@@ -1,7 +1,7 @@
 import { Component, For, Show, createSignal, createEffect, onMount, onCleanup } from "solid-js";
 import { uiStore } from "@/store/ui";
 import { tabsStore } from "@/store/tabs";
-import { searchWorkspace, SearchResult, getOrCreateDailyNote } from "@/lib/tauri/commands";
+import { searchWorkspace, SearchResult, getOrCreateDailyNote, saveCanvas } from "@/lib/tauri/commands";
 
 export const SearchModal: Component = () => {
   let inputRef: HTMLInputElement | undefined;
@@ -170,6 +170,26 @@ export const SearchModal: Component = () => {
                       <kbd class="px-1.5 py-0.5 rounded bg-[var(--color-bg-primary)] border border-[var(--color-border)] text-[var(--color-text-muted)] font-mono text-[10px]">
                         ⌘⇧D
                       </kbd>
+                    </div>
+
+                    <div
+                      onClick={async () => {
+                        uiStore.setSearchOpen(false);
+                        const name = prompt("Enter canvas name:", "Whiteboard");
+                        if (name && name.trim()) {
+                          const base = name.trim().replace(/\.canvas\.json$/, "");
+                          const filename = `${base}.canvas.json`;
+                          await saveCanvas(filename, { version: 1, nodes: [], edges: [] });
+                          await tabsStore.openTab(filename);
+                        }
+                      }}
+                      class="p-2 rounded-lg hover:bg-[var(--color-bg-tertiary)] cursor-pointer flex items-center justify-between transition-colors"
+                    >
+                      <div class="flex items-center space-x-2">
+                        <span class="text-indigo-400">🎨</span>
+                        <span class="font-medium text-[var(--color-text-primary)]">New Spatial Canvas</span>
+                      </div>
+                      <span class="text-[10px] text-[var(--color-text-muted)] font-mono">.canvas.json</span>
                     </div>
                   </Show>
 

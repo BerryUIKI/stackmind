@@ -399,4 +399,40 @@ export async function applyTemplate(
   return await invoke<string>("apply_template", { templatePath, noteTitle });
 }
 
+export interface CanvasNode {
+  id: string;
+  type: "file" | "block" | "text";
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  file?: string;
+  blockId?: string;
+  text?: string;
+  color?: string;
+}
+
+export interface CanvasEdge {
+  id: string;
+  fromNode: string;
+  fromSide?: "top" | "right" | "bottom" | "left";
+  toNode: string;
+  toSide?: "top" | "right" | "bottom" | "left";
+  label?: string;
+}
+
+export interface CanvasData {
+  version: number;
+  nodes: CanvasNode[];
+  edges: CanvasEdge[];
+}
+
+export async function readCanvas(path: string): Promise<CanvasData> {
+  return await invoke<CanvasData>("read_canvas", { path });
+}
+
+export async function saveCanvas(path: string, data: CanvasData): Promise<void> {
+  await invoke("save_canvas", { path, data });
+}
+
 
