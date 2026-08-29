@@ -1,7 +1,7 @@
 import { Component, For, Show, createSignal, createEffect, onMount, onCleanup } from "solid-js";
 import { uiStore } from "@/store/ui";
 import { tabsStore } from "@/store/tabs";
-import { searchWorkspace, SearchResult } from "@/lib/tauri/commands";
+import { searchWorkspace, SearchResult, getOrCreateDailyNote } from "@/lib/tauri/commands";
 
 export const SearchModal: Component = () => {
   let inputRef: HTMLInputElement | undefined;
@@ -135,8 +135,49 @@ export const SearchModal: Component = () => {
             <Show
               when={results().length > 0}
               fallback={
-                <div class="py-12 text-center text-[var(--color-text-muted)] italic">
-                  {query().trim() ? "No matching notes or blocks found." : "Type to start searching your knowledge base..."}
+                <div class="p-3 space-y-2">
+                  <Show when={!query().trim()}>
+                    <div class="text-[10px] font-semibold text-[var(--color-text-muted)] uppercase tracking-wider px-2 pt-1">
+                      Quick Commands
+                    </div>
+                    <div
+                      onClick={() => {
+                        uiStore.setSearchOpen(false);
+                        uiStore.setTemplateModalOpen(true);
+                      }}
+                      class="p-2 rounded-lg hover:bg-[var(--color-bg-tertiary)] cursor-pointer flex items-center justify-between transition-colors"
+                    >
+                      <div class="flex items-center space-x-2">
+                        <span class="text-indigo-400">📑</span>
+                        <span class="font-medium text-[var(--color-text-primary)]">Insert / Create from Template...</span>
+                      </div>
+                      <kbd class="px-1.5 py-0.5 rounded bg-[var(--color-bg-primary)] border border-[var(--color-border)] text-[var(--color-text-muted)] font-mono text-[10px]">
+                        ⌘⌥N
+                      </kbd>
+                    </div>
+
+                    <div
+                      onClick={() => {
+                        uiStore.setSearchOpen(false);
+                        getOrCreateDailyNote().then((res) => tabsStore.openTab(res.relative_path));
+                      }}
+                      class="p-2 rounded-lg hover:bg-[var(--color-bg-tertiary)] cursor-pointer flex items-center justify-between transition-colors"
+                    >
+                      <div class="flex items-center space-x-2">
+                        <span class="text-indigo-400">📅</span>
+                        <span class="font-medium text-[var(--color-text-primary)]">Open Today's Daily Note</span>
+                      </div>
+                      <kbd class="px-1.5 py-0.5 rounded bg-[var(--color-bg-primary)] border border-[var(--color-border)] text-[var(--color-text-muted)] font-mono text-[10px]">
+                        ⌘⇧D
+                      </kbd>
+                    </div>
+                  </Show>
+
+                  <Show when={query().trim()}>
+                    <div class="py-10 text-center text-[var(--color-text-muted)] italic">
+                      No matching notes or blocks found.
+                    </div>
+                  </Show>
                 </div>
               }
             >

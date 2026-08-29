@@ -5,5 +5,6 @@ pub mod git;
 pub mod graph;
 pub mod markdown;
 pub mod search;
+pub mod template;
 pub mod transclusion;
 pub mod workspace;
