@@ -1,11 +1,13 @@
-import { Component, createSignal, onMount, For, Show } from "solid-js";
+import { Component, createSignal, onMount, onCleanup, For, Show } from "solid-js";
 import { getOrCreateDailyNote, listDailyNotes, DailyNoteEntry } from "@/lib/tauri/commands";
 import { tabsStore } from "@/store/tabs";
 
 export const CalendarWidget: Component = () => {
-  const [collapsed, setCollapsed] = createSignal(false);
+  const [isOpen, setIsOpen] = createSignal(false);
   const [viewDate, setViewDate] = createSignal(new Date());
   const [dailyNotes, setDailyNotes] = createSignal<DailyNoteEntry[]>([]);
+
+  let popoverRef: HTMLDivElement | undefined;
 
   const refreshNotes = async () => {
     try {
@@ -18,6 +20,17 @@ export const CalendarWidget: Component = () => {
 
   onMount(() => {
     refreshNotes();
+
+    const handleOutsideClick = (e: MouseEvent) => {
+      if (popoverRef && !popoverRef.contains(e.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+
+    window.addEventListener("mousedown", handleOutsideClick);
+    onCleanup(() => {
+      window.removeEventListener("mousedown", handleOutsideClick);
+    });
   });
 
   const monthNames = [
@@ -28,19 +41,22 @@ export const CalendarWidget: Component = () => {
   const year = () => viewDate().getFullYear();
   const month = () => viewDate().getMonth();
 
-  const prevMonth = () => {
+  const prevMonth = (e: MouseEvent) => {
+    e.stopPropagation();
     const d = new Date(viewDate());
     d.setMonth(d.getMonth() - 1);
     setViewDate(d);
   };
 
-  const nextMonth = () => {
+  const nextMonth = (e: MouseEvent) => {
+    e.stopPropagation();
     const d = new Date(viewDate());
     d.setMonth(d.getMonth() + 1);
     setViewDate(d);
   };
 
-  const jumpToToday = () => {
+  const jumpToToday = (e: MouseEvent) => {
+    e.stopPropagation();
     setViewDate(new Date());
     openDailyForDate(formatDate(new Date()));
   };
@@ -54,12 +70,15 @@ export const CalendarWidget: Component = () => {
 
   const todayStr = () => formatDate(new Date());
 
+  const hasTodayNote = () => {
+    return dailyNotes().some((n) => n.date === todayStr());
+  };
+
   const daysInMonth = () => {
     const y = year();
     const m = month();
     const firstDayIndex = new Date(y, m, 1).getDay(); // 0 = Sunday, 1 = Monday ...
-    // Adjust so 0 = Monday, 6 = Sunday
-    const startOffset = (firstDayIndex + 6) % 7;
+    const startOffset = (firstDayIndex + 6) % 7; // 0 = Monday
     const totalDays = new Date(y, m + 1, 0).getDate();
 
     const days: Array<{ dayNum: number | null; dateStr: string }> = [];
@@ -85,56 +104,76 @@ export const CalendarWidget: Component = () => {
       const res = await getOrCreateDailyNote(dateStr);
       await refreshNotes();
       tabsStore.openTab(res.relative_path);
+      setIsOpen(false);
     } catch (e) {
       console.error("Failed to open daily note:", e);
     }
   };
 
   return (
-    <div class="border-b border-[var(--color-border)] bg-[var(--color-bg-secondary)] select-none">
-      {/* Header Bar */}
-      <div class="flex items-center justify-between px-3 py-2 text-xs text-[var(--color-text-secondary)] font-medium">
-        <button
-          onClick={() => setCollapsed(!collapsed())}
-          class="flex items-center space-x-1.5 hover:text-[var(--color-text-primary)] transition-colors cursor-pointer"
-        >
-          <span class="text-[10px] transform transition-transform duration-150" classList={{ "rotate-90": !collapsed() }}>
-            ▶
-          </span>
-          <span class="font-semibold text-xs text-[var(--color-text-primary)]">
-            {monthNames[month()]} {year()}
-          </span>
-        </button>
+    <div class="relative" ref={popoverRef}>
+      {/* Top-Right Calendar Toggle Icon Button */}
+      <button
+        onClick={() => {
+          const next = !isOpen();
+          setIsOpen(next);
+          if (next) refreshNotes();
+        }}
+        class={`p-1 rounded hover:bg-[var(--color-bg-tertiary)] transition-colors cursor-pointer relative ${
+          isOpen()
+            ? "text-indigo-400 bg-[var(--color-bg-tertiary)]"
+            : "text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)]"
+        }`}
+        title="Daily Notes & Calendar (Cmd+Shift+D)"
+      >
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+          />
+        </svg>
+        <Show when={hasTodayNote()}>
+          <span class="absolute top-1 right-1 w-1.5 h-1.5 rounded-full bg-indigo-500" />
+        </Show>
+      </button>
 
-        <div class="flex items-center space-x-1">
-          <button
-            onClick={jumpToToday}
-            class="px-1.5 py-0.5 text-[10px] rounded bg-[var(--color-bg-tertiary)] hover:bg-[var(--color-bg-hover)] text-indigo-400 font-medium transition-colors cursor-pointer"
-            title="Jump to Today's Note"
-          >
-            Today
-          </button>
-          <button
-            onClick={prevMonth}
-            class="p-1 rounded hover:bg-[var(--color-bg-tertiary)] text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] transition-colors cursor-pointer"
-            title="Previous Month"
-          >
-            ‹
-          </button>
-          <button
-            onClick={nextMonth}
-            class="p-1 rounded hover:bg-[var(--color-bg-tertiary)] text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] transition-colors cursor-pointer"
-            title="Next Month"
-          >
-            ›
-          </button>
-        </div>
-      </div>
+      {/* Floating Calendar Popover */}
+      <Show when={isOpen()}>
+        <div class="absolute right-0 top-full mt-2 w-64 p-3 rounded-xl bg-[var(--color-bg-secondary)] border border-[var(--color-border)] shadow-2xl z-50 animate-in fade-in zoom-in-95 duration-100 select-none text-xs">
+          {/* Header */}
+          <div class="flex items-center justify-between pb-2 mb-2 border-b border-[var(--color-border)]">
+            <span class="font-semibold text-xs text-[var(--color-text-primary)]">
+              {monthNames[month()]} {year()}
+            </span>
 
-      {/* Collapsible Month Grid */}
-      <Show when={!collapsed()}>
-        <div class="px-3 pb-2.5 pt-0.5">
-          {/* Day of week headers */}
+            <div class="flex items-center space-x-1">
+              <button
+                onClick={jumpToToday}
+                class="px-1.5 py-0.5 text-[10px] rounded bg-[var(--color-bg-tertiary)] hover:bg-[var(--color-bg-hover)] text-indigo-400 font-medium transition-colors cursor-pointer"
+                title="Jump to Today's Note"
+              >
+                Today
+              </button>
+              <button
+                onClick={prevMonth}
+                class="w-5 h-5 rounded flex items-center justify-center hover:bg-[var(--color-bg-tertiary)] text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] transition-colors cursor-pointer font-bold"
+                title="Previous Month"
+              >
+                ‹
+              </button>
+              <button
+                onClick={nextMonth}
+                class="w-5 h-5 rounded flex items-center justify-center hover:bg-[var(--color-bg-tertiary)] text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] transition-colors cursor-pointer font-bold"
+                title="Next Month"
+              >
+                ›
+              </button>
+            </div>
+          </div>
+
+          {/* Weekday headers */}
           <div class="grid grid-cols-7 gap-1 text-center text-[10px] font-semibold text-[var(--color-text-muted)] mb-1">
             <span>Mo</span>
             <span>Tu</span>
@@ -145,8 +184,8 @@ export const CalendarWidget: Component = () => {
             <span>Su</span>
           </div>
 
-          {/* Calendar Day Grid */}
-          <div class="grid grid-cols-7 gap-1 text-center text-xs">
+          {/* Calendar Grid */}
+          <div class="grid grid-cols-7 gap-1 text-center">
             <For each={daysInMonth()}>
               {(item) => (
                 <div class="h-6 w-full flex items-center justify-center relative">
@@ -155,7 +194,7 @@ export const CalendarWidget: Component = () => {
                       onClick={() => openDailyForDate(item.dateStr)}
                       class={`h-6 w-6 rounded-full flex flex-col items-center justify-center text-[11px] transition-all cursor-pointer relative ${
                         item.dateStr === todayStr()
-                          ? "bg-indigo-500 text-white font-bold shadow-sm"
+                          ? "bg-indigo-500 text-white font-bold shadow-xs"
                           : "hover:bg-[var(--color-bg-tertiary)] text-[var(--color-text-primary)]"
                       }`}
                     >
@@ -168,6 +207,17 @@ export const CalendarWidget: Component = () => {
                 </div>
               )}
             </For>
+          </div>
+
+          {/* Footer Quick Action */}
+          <div class="pt-2.5 mt-2.5 border-t border-[var(--color-border)] flex items-center justify-between text-[10px] text-[var(--color-text-muted)]">
+            <span>Quick: <kbd class="font-mono">⌘⇧D</kbd></span>
+            <button
+              onClick={(e) => jumpToToday(e)}
+              class="text-indigo-400 hover:text-indigo-300 font-medium cursor-pointer"
+            >
+              Open Today's Note
+            </button>
           </div>
         </div>
       </Show>

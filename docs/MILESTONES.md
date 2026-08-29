@@ -176,4 +176,4 @@ This document tracks the phased implementation milestones, acceptance criteria, 
   - [x] Full Phase 3 end-to-end integration across transclusion, daily notes, templates, and spatial canvas.
   - [x] Strict invariant verification (source of truth on disk, non-media scope, atomic file write, self-write suppression).
   - [x] Full automated test pass (`cargo test`, `cargo clippy`, `cargo fmt`, `pnpm tsc`, `pnpm test`, `pnpm build`).
-  - [x] Version bump and release preparation for `v2.0.0`.
+  - [x] Version maintained at development baseline `0.1.0` pending official user release notification.
