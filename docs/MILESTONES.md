@@ -21,7 +21,7 @@ This document tracks the phased implementation milestones, acceptance criteria, 
 | **M11** | Embedded Git Version Control Engine | `v1.2.0` | ✅ Completed |
 | **M12** | P2 Integration, Polish & Quality Verification | `v1.3.0` | ✅ Completed |
 | **M13** | Block Transclusion & In-Place Embeds | `v1.4.0` | ✅ Completed |
-| **M14** | Daily Notes & Interactive Journaling Engine | `v1.5.0` | ⏳ Pending (Phase 3) |
+| **M14** | Daily Notes & Interactive Journaling Engine | `v1.5.0` | ✅ Completed |
 | **M15** | Templates & Snippets System | `v1.6.0` | ⏳ Pending (Phase 3) |
 | **M16** | Infinite Text-Block Spatial Canvas | `v1.7.0` | ⏳ Pending (Phase 3) |
 | **M17** | P3 Integration, Quality Verification & Release | `v2.0.0` | ⏳ Pending (Phase 3) |
@@ -144,13 +144,13 @@ This document tracks the phased implementation milestones, acceptance criteria, 
   - [x] Automated link repair updates for transclusion syntax.
 
 ### Milestone 14: Daily Notes & Interactive Journaling Engine
-- **Status:** ⏳ Pending (Phase 3)
+- **Status:** ✅ Completed
 - **Key Deliverables:**
-  - [ ] `.stackmynd/workspace.json` daily notes configuration schema.
-  - [ ] Rust backend `get_or_create_daily_note` and `list_daily_notes` commands.
-  - [ ] Sidebar collapsible mini-calendar widget with note existence dots.
-  - [ ] Global shortcut `Cmd+Shift+D` to open/create today's note.
-  - [ ] Sequential temporal navigation arrows (`◀ Yesterday`, `Tomorrow ▶`) in document header.
+  - [x] `.stackmynd/workspace.json` daily notes configuration schema.
+  - [x] Rust backend `get_or_create_daily_note` and `list_daily_notes` commands.
+  - [x] Sidebar collapsible mini-calendar widget with note existence dots.
+  - [x] Global shortcut `Cmd+Shift+D` to open/create today's note.
+  - [x] Sequential temporal navigation arrows (`◀ Yesterday`, `Tomorrow ▶`) in document header.
 
 ### Milestone 15: Templates & Snippets System
 - **Status:** ⏳ Pending (Phase 3)

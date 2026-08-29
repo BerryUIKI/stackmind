@@ -49,6 +49,8 @@ pub fn run() {
             commands::git::git_checkout_branch,
             commands::git::git_create_branch,
             commands::transclusion::resolve_transclusion,
+            commands::daily::get_or_create_daily_note,
+            commands::daily::list_daily_notes,
         ])
         .run(tauri::generate_context!())
         .expect("error while running Stackmynd application");
@@ -621,5 +623,56 @@ This is about classical physics.
         )
         .unwrap();
         assert!(!not_found.exists);
+    }
+
+    #[test]
+    fn test_daily_note_lifecycle() {
+        let test_dir = tempfile::tempdir().unwrap();
+        let ws_path = test_dir.path();
+
+        // 1. Create a daily note for a specific date
+        let res1 = services::daily::DailyService::get_or_create_daily_note(
+            ws_path,
+            Some("2026-08-29".to_string()),
+        )
+        .unwrap();
+
+        assert!(res1.is_new);
+        assert_eq!(res1.date, "2026-08-29");
+        assert_eq!(res1.relative_path, "daily/2026-08-29.md");
+        assert!(res1.content.contains("# 2026-08-29 (Saturday)"));
+        assert!(res1.content.contains("Focus & Priorities"));
+
+        // 2. Calling again should return the existing note (is_new = false)
+        let res2 = services::daily::DailyService::get_or_create_daily_note(
+            ws_path,
+            Some("2026-08-29".to_string()),
+        )
+        .unwrap();
+        assert!(!res2.is_new);
+        assert_eq!(res2.content, res1.content);
+
+        // 3. Create another daily note for tomorrow
+        let res3 = services::daily::DailyService::get_or_create_daily_note(
+            ws_path,
+            Some("2026-08-30".to_string()),
+        )
+        .unwrap();
+        assert!(res3.is_new);
+
+        // 4. List daily notes and verify order
+        let list = services::daily::DailyService::list_daily_notes(ws_path).unwrap();
+        assert_eq!(list.len(), 2);
+        assert_eq!(list[0].date, "2026-08-30"); // descending order
+        assert_eq!(list[1].date, "2026-08-29");
+        assert!(list[0].word_count > 0);
+
+        // 5. Test template variable interpolation directly
+        let custom_template = "Note for {{date}}: Yesterday was {{yesterday}}, tomorrow is {{tomorrow}}. UUID: {{uuid}}";
+        let interpolated =
+            services::daily::interpolate_variables(custom_template, "2026-08-29", "Title");
+        assert!(interpolated.contains("Yesterday was 2026-08-28"));
+        assert!(interpolated.contains("tomorrow is 2026-08-30"));
+        assert!(!interpolated.contains("{{uuid}}"));
     }
 }

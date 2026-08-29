@@ -3,6 +3,7 @@ import { uiStore } from "@/store/ui";
 import { workspaceStore } from "@/store/workspace";
 import { tabsStore } from "@/store/tabs";
 import { onExternalFileChanged } from "@/lib/tauri/events";
+import { getOrCreateDailyNote } from "@/lib/tauri/commands";
 import { TitleBar } from "@/components/layout/TitleBar";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { Splitter } from "@/components/layout/Splitter";
@@ -72,6 +73,9 @@ export const App: Component = () => {
       } else if (isCmdOrCtrl && e.key.toLowerCase() === "s") {
         e.preventDefault();
         tabsStore.saveActiveTab();
+      } else if (isCmdOrCtrl && e.shiftKey && e.key.toLowerCase() === "d") {
+        e.preventDefault();
+        getOrCreateDailyNote().then((res) => tabsStore.openTab(res.relative_path));
       } else if (isCmdOrCtrl && e.key.toLowerCase() === "n") {
         e.preventDefault();
         const name = prompt("Enter note name:", "Untitled");
