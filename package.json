@@ -1,6 +1,6 @@
 {
   "name": "stackmynd",
-  "version": "0.1.0",
+  "version": "2.0.0",
   "description": "Local-First Multi-Workspace Block-Level Markdown Knowledge Base",
   "type": "module",
   "license": "GPL-3.0-only",
