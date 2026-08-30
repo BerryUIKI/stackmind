@@ -1,4 +1,4 @@
-import { Component, For, Show } from "solid-js";
+import { Component, For, Show, createSignal, onMount, onCleanup } from "solid-js";
 import { FileNode } from "@/lib/tauri/commands";
 import { workspaceStore } from "@/store/workspace";
 import { tabsStore } from "@/store/tabs";
@@ -12,6 +12,18 @@ export const FileTreeNode: Component<Props> = (props) => {
   const isExpanded = () => workspaceStore.expandedFolders().has(props.node.relative_path);
   const isActive = () => tabsStore.activeTabPath() === props.node.relative_path;
 
+  const [contextMenu, setContextMenu] = createSignal<{ x: number; y: number } | null>(null);
+
+  onMount(() => {
+    const handleCloseMenu = () => setContextMenu(null);
+    window.addEventListener("click", handleCloseMenu);
+    window.addEventListener("contextmenu", handleCloseMenu);
+    onCleanup(() => {
+      window.removeEventListener("click", handleCloseMenu);
+      window.removeEventListener("contextmenu", handleCloseMenu);
+    });
+  });
+
   const handleClick = (e: MouseEvent) => {
     e.stopPropagation();
     if (props.node.is_dir) {
@@ -21,17 +33,79 @@ export const FileTreeNode: Component<Props> = (props) => {
     }
   };
 
-  const handleDelete = (e: MouseEvent) => {
+  const handleContextMenu = (e: MouseEvent) => {
+    e.preventDefault();
     e.stopPropagation();
+    setContextMenu({ x: e.clientX, y: e.clientY });
+  };
+
+  const handleRename = async (e?: MouseEvent) => {
+    if (e) e.stopPropagation();
+    setContextMenu(null);
+    const oldName = props.node.name;
+    const isMd = oldName.endsWith(".md");
+    const baseName = isMd ? oldName.replace(/\.md$/, "") : oldName;
+    const newName = prompt("Enter new name:", baseName);
+    if (!newName || newName.trim() === "" || newName.trim() === baseName) return;
+
+    const parentDir = props.node.relative_path.includes("/")
+      ? props.node.relative_path.substring(0, props.node.relative_path.lastIndexOf("/"))
+      : "";
+    const finalNewName = isMd ? (newName.trim().endsWith(".md") ? newName.trim() : `${newName.trim()}.md`) : newName.trim();
+    const newRelPath = parentDir ? `${parentDir}/${finalNewName}` : finalNewName;
+
+    try {
+      await workspaceStore.renameItem(props.node.relative_path, newRelPath);
+      if (tabsStore.activeTabPath() === props.node.relative_path) {
+        tabsStore.openTab(newRelPath);
+        tabsStore.closeTab(props.node.relative_path);
+      }
+    } catch (err) {
+      alert(`Failed to rename: ${String(err)}`);
+    }
+  };
+
+  const handleDelete = (e?: MouseEvent) => {
+    if (e) e.stopPropagation();
+    setContextMenu(null);
     if (confirm(`Move "${props.node.name}" to workspace trash?`)) {
       workspaceStore.removeToTrash(props.node.relative_path);
+      if (tabsStore.activeTabPath() === props.node.relative_path) {
+        tabsStore.closeTab(props.node.relative_path);
+      }
     }
+  };
+
+  const handleCopyPath = (e?: MouseEvent) => {
+    if (e) e.stopPropagation();
+    setContextMenu(null);
+    navigator.clipboard.writeText(props.node.relative_path);
+  };
+
+  const handleNewNoteInside = async (e?: MouseEvent) => {
+    if (e) e.stopPropagation();
+    setContextMenu(null);
+    const name = prompt("Enter note name:", "Untitled");
+    if (!name || !name.trim()) return;
+    const rel = `${props.node.relative_path}/${name.trim()}`;
+    const finalPath = await workspaceStore.newNote(rel);
+    await tabsStore.openTab(finalPath);
+  };
+
+  const handleNewFolderInside = async (e?: MouseEvent) => {
+    if (e) e.stopPropagation();
+    setContextMenu(null);
+    const name = prompt("Enter folder name:", "New Folder");
+    if (!name || !name.trim()) return;
+    const rel = `${props.node.relative_path}/${name.trim()}`;
+    await workspaceStore.newFolder(rel);
   };
 
   return (
     <div class="select-none text-xs">
       <div
         onClick={handleClick}
+        onContextMenu={handleContextMenu}
         style={{ "padding-left": `${props.level * 14 + 10}px` }}
         class={`group flex items-center justify-between py-1 pr-2 rounded-md cursor-pointer transition-colors ${
           isActive()
@@ -73,6 +147,60 @@ export const FileTreeNode: Component<Props> = (props) => {
           </button>
         </div>
       </div>
+
+      {/* Floating Context Menu */}
+      <Show when={contextMenu()}>
+        <div
+          style={{
+            position: "fixed",
+            left: `${Math.min(contextMenu()!.x, window.innerWidth - 180)}px`,
+            top: `${Math.min(contextMenu()!.y, window.innerHeight - 200)}px`,
+            "z-index": 1000,
+          }}
+          class="w-44 bg-[var(--color-bg-secondary)] border border-[var(--color-border)] rounded-xl shadow-2xl p-1 text-xs select-none animate-in fade-in zoom-in-95 duration-75 text-[var(--color-text-primary)] font-sans"
+        >
+          <Show when={props.node.is_dir}>
+            <button
+              onClick={handleNewNoteInside}
+              class="w-full text-left px-2.5 py-1.5 rounded-md hover:bg-[var(--color-bg-tertiary)] flex items-center space-x-2 cursor-pointer transition-colors"
+            >
+              <span>📄</span>
+              <span>New Note Inside</span>
+            </button>
+            <button
+              onClick={handleNewFolderInside}
+              class="w-full text-left px-2.5 py-1.5 rounded-md hover:bg-[var(--color-bg-tertiary)] flex items-center space-x-2 cursor-pointer transition-colors"
+            >
+              <span>📁</span>
+              <span>New Folder Inside</span>
+            </button>
+            <div class="my-1 border-t border-[var(--color-border)]" />
+          </Show>
+
+          <button
+            onClick={handleRename}
+            class="w-full text-left px-2.5 py-1.5 rounded-md hover:bg-[var(--color-bg-tertiary)] flex items-center space-x-2 cursor-pointer transition-colors"
+          >
+            <span>✏️</span>
+            <span>Rename...</span>
+          </button>
+          <button
+            onClick={handleCopyPath}
+            class="w-full text-left px-2.5 py-1.5 rounded-md hover:bg-[var(--color-bg-tertiary)] flex items-center space-x-2 cursor-pointer transition-colors"
+          >
+            <span>📋</span>
+            <span>Copy Relative Path</span>
+          </button>
+          <div class="my-1 border-t border-[var(--color-border)]" />
+          <button
+            onClick={handleDelete}
+            class="w-full text-left px-2.5 py-1.5 rounded-md hover:bg-rose-500/10 text-rose-400 hover:text-rose-300 flex items-center space-x-2 cursor-pointer transition-colors"
+          >
+            <span>🗑️</span>
+            <span>Move to Trash</span>
+          </button>
+        </div>
+      </Show>
 
       {/* Render children recursively if expanded */}
       <Show when={props.node.is_dir && isExpanded() && props.node.children}>

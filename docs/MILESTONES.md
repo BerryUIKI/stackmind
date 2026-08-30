@@ -25,6 +25,7 @@ This document tracks the phased implementation milestones, acceptance criteria, 
 | **M15** | Templates & Snippets System | `v1.6.0` | ✅ Completed |
 | **M16** | Infinite Text-Block Spatial Canvas | `v1.7.0` | ✅ Completed |
 | **M17** | P3 Integration, Quality Verification & Release | `v2.0.0` | ✅ Completed |
+| **M18** | Interactive Authoring Polish, Wikilink Autocomplete & Context Menus | `v0.1.0` | ✅ Completed |
 
 ---
 
@@ -177,3 +178,11 @@ This document tracks the phased implementation milestones, acceptance criteria, 
   - [x] Strict invariant verification (source of truth on disk, non-media scope, atomic file write, self-write suppression).
   - [x] Full automated test pass (`cargo test`, `cargo clippy`, `cargo fmt`, `pnpm tsc`, `pnpm test`, `pnpm build`).
   - [x] Version maintained at development baseline `0.1.0` pending official user release notification.
+
+### Milestone 18: Interactive Authoring Polish, Wikilink Autocomplete & Context Menus
+- **Status:** ✅ Completed
+- **Key Deliverables:**
+  - [x] Interactive task list toggling in Preview Mode: clicking checkboxes updates Markdown source on disk.
+  - [x] Inline `[[` Wikilink and Block Autocomplete in Source Editor with keyboard navigation (Arrow Up/Down, Enter/Tab).
+  - [x] Sleek Context Menu on File Tree (Rename, Delete to Trash, Reveal in File Manager, Copy Relative Path, New Note/Folder Inside).
+  - [x] Tab Context Menu (Close Others, Close to the Right, Copy Path) & HTML5 drag-and-drop tab reordering.

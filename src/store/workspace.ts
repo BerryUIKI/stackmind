@@ -9,6 +9,7 @@ import {
   readDirectory,
   createFile,
   createDirectory,
+  renamePath,
   deleteToTrash,
   restoreFromTrash,
   listTrash,
@@ -102,6 +103,27 @@ function createWorkspaceStore() {
     await refreshTrash();
   };
 
+  const renameItem = async (oldPath: string, newPath: string) => {
+    await renamePath(oldPath, newPath);
+    await refreshTree();
+  };
+
+  const getAllNotePaths = (): string[] => {
+    const results: string[] = [];
+    const traverse = (nodes: FileNode[]) => {
+      for (const node of nodes) {
+        if (!node.is_dir && node.relative_path.endsWith(".md")) {
+          results.push(node.relative_path);
+        }
+        if (node.children) {
+          traverse(node.children);
+        }
+      }
+    };
+    traverse(fileTree());
+    return results;
+  };
+
   return {
     activeWorkspace,
     setActiveWorkspace,
@@ -121,6 +143,8 @@ function createWorkspaceStore() {
     removeToTrash,
     restoreTrashItem,
     clearTrash,
+    renameItem,
+    getAllNotePaths,
   };
 }
 

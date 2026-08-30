@@ -73,6 +73,7 @@ export const SynchronizedEditor: Component = () => {
           <MarkdownPreview
             ref={(el) => (previewEl = el)}
             content={currentTab()?.content || ""}
+            onChange={(val) => tabsStore.updateTabContent(val)}
             onScroll={handlePreviewScroll}
           />
         </div>

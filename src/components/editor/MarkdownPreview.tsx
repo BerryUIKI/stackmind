@@ -6,6 +6,7 @@ import mermaid from "mermaid";
 
 interface Props {
   content: string;
+  onChange?: (val: string) => void;
   onScroll?: (e: Event) => void;
   ref?: (el: HTMLDivElement) => void;
 }
@@ -92,7 +93,30 @@ export const MarkdownPreview: Component<Props> = (props) => {
   });
 
   const handleClick = (e: MouseEvent) => {
-    // 1. Check Wikilink or Transclusion Jump button clicks
+    // 1. Check Task List Checkbox Clicks
+    const checkbox = (e.target as HTMLElement).closest(".task-list-checkbox") as HTMLInputElement | null;
+    if (checkbox && props.onChange) {
+      const idxStr = checkbox.getAttribute("data-task-index");
+      if (idxStr !== null) {
+        const targetIdx = parseInt(idxStr, 10);
+        let currentIdx = 0;
+        const updated = props.content.replace(/^(\s*[-*+]\s+\[)( |x|X)(\])/gm, (match, prefix, state, suffix) => {
+          if (currentIdx === targetIdx) {
+            currentIdx++;
+            const newState = state === " " ? "x" : " ";
+            return `${prefix}${newState}${suffix}`;
+          }
+          currentIdx++;
+          return match;
+        });
+        if (updated !== props.content) {
+          props.onChange(updated);
+        }
+      }
+      return;
+    }
+
+    // 2. Check Wikilink or Transclusion Jump button clicks
     const wikiTarget = (e.target as HTMLElement).closest(".wikilink") as HTMLElement | null;
     const jumpBtn = (e.target as HTMLElement).closest(".transclusion-jump-btn") as HTMLElement | null;
     const target = wikiTarget || jumpBtn;

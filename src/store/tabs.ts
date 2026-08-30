@@ -161,6 +161,31 @@ function createTabsStore() {
     }
   };
 
+  const closeOtherTabs = (keepPath: string) => {
+    const kept = tabs().filter((t) => t.path === keepPath);
+    setTabs(kept);
+    setActiveTabPath(keepPath);
+  };
+
+  const closeTabsToRight = (path: string) => {
+    const current = tabs();
+    const idx = current.findIndex((t) => t.path === path);
+    if (idx === -1) return;
+    const kept = current.slice(0, idx + 1);
+    setTabs(kept);
+    if (!kept.some((t) => t.path === activeTabPath())) {
+      setActiveTabPath(path);
+    }
+  };
+
+  const reorderTabs = (fromIndex: number, toIndex: number) => {
+    if (fromIndex === toIndex) return;
+    const list = [...tabs()];
+    const [moved] = list.splice(fromIndex, 1);
+    list.splice(toIndex, 0, moved);
+    setTabs(list);
+  };
+
   return {
     tabs,
     activeTabPath,
@@ -169,6 +194,9 @@ function createTabsStore() {
     getActiveTab,
     openTab,
     closeTab,
+    closeOtherTabs,
+    closeTabsToRight,
+    reorderTabs,
     updateTabContent,
     saveActiveTab,
     updateCursorPosition,
