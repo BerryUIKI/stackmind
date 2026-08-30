@@ -106,7 +106,15 @@ export async function renderMarkdownToHtml(markdown: string): Promise<string> {
     }
   );
 
-  // 6. Convert mermaid code blocks into <div class="mermaid"> containers
+  // 6. Make task list checkboxes interactive
+  let taskIndex = 0;
+  html = html.replace(/<input\s+([^>]*?)type="checkbox"([^>]*?)>/gi, (match, before, after) => {
+    const isChecked = /checked/i.test(match);
+    const combined = `${before} ${after}`.replace(/\s+disabled(?:=""|="true")?/gi, "");
+    return `<input type="checkbox"${combined} class="task-list-checkbox cursor-pointer accent-indigo-500 mr-1.5 align-middle" data-task-index="${taskIndex++}" ${isChecked ? "checked" : ""}>`;
+  });
+
+  // 7. Convert mermaid code blocks into <div class="mermaid"> containers
   html = html.replace(/<pre><code class="language-mermaid">([\s\S]*?)<\/code><\/pre>/g, (_match, code) => {
     // Unescape HTML entities in mermaid code
     const raw = code
