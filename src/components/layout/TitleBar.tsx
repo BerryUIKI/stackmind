@@ -180,18 +180,21 @@ export const TitleBar: Component = () => {
       </div>
 
       {/* Center section: Global Search Palette Trigger */}
-      <div class="flex-1 max-w-[360px] mx-4" data-tauri-drag-region>
+      <div class="flex-1 min-w-0 max-w-[360px] mx-2 sm:mx-4" data-tauri-drag-region>
         <button
           onClick={() => uiStore.setSearchOpen(true)}
           class="w-full flex items-center justify-between px-2.5 py-1 rounded-md bg-[var(--color-bg-secondary)] hover:bg-[var(--color-bg-tertiary)] border border-[var(--color-border)] text-[var(--color-text-muted)] cursor-pointer transition-colors"
+          title="Search notes and blocks (Cmd+K)"
+          aria-label="Search notes and blocks"
         >
           <span class="flex items-center space-x-1.5 truncate">
-            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg class="w-3.5 h-3.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
             </svg>
-            <span class="text-xs">Search notes and blocks...</span>
+            <span class="text-xs hidden sm:inline truncate">Search notes and blocks...</span>
+            <span class="text-xs sm:hidden truncate">Search...</span>
           </span>
-          <kbd class="px-1.5 py-0.5 text-[10px] rounded bg-[var(--color-bg-tertiary)] border border-[var(--color-border)] text-[var(--color-text-muted)]">
+          <kbd class="px-1.5 py-0.5 text-[10px] rounded bg-[var(--color-bg-tertiary)] border border-[var(--color-border)] text-[var(--color-text-muted)] shrink-0 ml-1">
             ⌘K
           </kbd>
         </button>
