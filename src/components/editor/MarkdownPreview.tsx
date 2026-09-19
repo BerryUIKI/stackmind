@@ -96,6 +96,14 @@ export const MarkdownPreview: Component<Props> = (props) => {
     // 1. Check Task List Checkbox Clicks
     const checkbox = (e.target as HTMLElement).closest(".task-list-checkbox") as HTMLInputElement | null;
     if (checkbox && props.onChange) {
+      if (checkbox.disabled) return;
+      checkbox.disabled = true;
+      checkbox.classList.add("scale-110", "transition-transform");
+      setTimeout(() => {
+        checkbox.disabled = false;
+        checkbox.classList.remove("scale-110");
+      }, 250);
+
       const idxStr = checkbox.getAttribute("data-task-index");
       if (idxStr !== null) {
         const targetIdx = parseInt(idxStr, 10);

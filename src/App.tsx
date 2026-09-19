@@ -85,6 +85,36 @@ export const App: Component = () => {
       } else if (isCmdOrCtrl && e.key.toLowerCase() === "e") {
         e.preventDefault();
         uiStore.setExportModalOpen(true);
+      } else if (isCmdOrCtrl && e.key.toLowerCase() === "w") {
+        e.preventDefault();
+        const active = tabsStore.activeTabPath();
+        if (active) {
+          tabsStore.closeTab(active);
+        }
+      } else if (
+        (isCmdOrCtrl && e.shiftKey && (e.key === "[" || e.key === "{")) ||
+        (e.ctrlKey && !e.shiftKey && e.key === "PageUp")
+      ) {
+        e.preventDefault();
+        tabsStore.prevTab();
+      } else if (
+        (isCmdOrCtrl && e.shiftKey && (e.key === "]" || e.key === "}")) ||
+        (e.ctrlKey && !e.shiftKey && e.key === "PageDown")
+      ) {
+        e.preventDefault();
+        tabsStore.nextTab();
+      } else if (
+        (e.ctrlKey && e.shiftKey && e.key === "PageUp") ||
+        (isCmdOrCtrl && e.altKey && e.key === "ArrowLeft")
+      ) {
+        e.preventDefault();
+        tabsStore.moveActiveTabLeft();
+      } else if (
+        (e.ctrlKey && e.shiftKey && e.key === "PageDown") ||
+        (isCmdOrCtrl && e.altKey && e.key === "ArrowRight")
+      ) {
+        e.preventDefault();
+        tabsStore.moveActiveTabRight();
       } else if (isCmdOrCtrl && e.key.toLowerCase() === "n") {
         e.preventDefault();
         const name = prompt("Enter note name:", "Untitled");

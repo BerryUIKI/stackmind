@@ -199,20 +199,40 @@ export const SourceEditor: Component<Props> = (props) => {
     checkAutocomplete();
   };
 
+  const renderMatch = (text: string, query: string, isSelected: boolean) => {
+    if (!query) return <span class="truncate">{text}</span>;
+    const lower = text.toLowerCase();
+    const qLower = query.toLowerCase();
+    const matchIdx = lower.indexOf(qLower);
+    if (matchIdx === -1) return <span class="truncate">{text}</span>;
+    const before = text.substring(0, matchIdx);
+    const match = text.substring(matchIdx, matchIdx + query.length);
+    const after = text.substring(matchIdx + query.length);
+    return (
+      <span class="truncate">
+        {before}
+        <span class={isSelected ? "font-bold underline text-white" : "font-bold underline text-indigo-400"}>
+          {match}
+        </span>
+        {after}
+      </span>
+    );
+  };
+
   return (
-    <div class="h-full w-full flex bg-[var(--color-bg-secondary)] overflow-hidden font-mono text-xs select-none relative">
+    <div class="relative w-full h-full flex overflow-hidden bg-[var(--color-bg-primary)] font-mono text-sm">
       {/* Line Numbers Gutter */}
       <div
         ref={gutterRef}
-        class="w-12 shrink-0 py-4 pr-3 text-right bg-[var(--color-bg-sidebar)] border-r border-[var(--color-border)] text-[var(--color-text-muted)] select-none overflow-hidden"
+        class="w-12 py-4 select-none text-right pr-3 text-[var(--color-text-muted)] bg-[var(--color-bg-sidebar)] border-r border-[var(--color-border)] font-mono text-xs overflow-hidden leading-6"
       >
         <For each={lines()}>
-          {(lineNum) => <div class="leading-6">{lineNum}</div>}
+          {(line) => <div class="h-6 leading-6">{line}</div>}
         </For>
       </div>
 
-      {/* Code Textarea Area */}
-      <div class="flex-1 h-full relative overflow-hidden">
+      {/* Editor Main Textarea */}
+      <div class="relative flex-1 h-full overflow-hidden">
         <textarea
           ref={(el) => {
             textareaRef = el;
@@ -263,7 +283,7 @@ export const SourceEditor: Component<Props> = (props) => {
                     >
                       <div class="flex items-center space-x-2 truncate pr-2">
                         <span class={isSelected() ? "text-white" : "text-indigo-400"}>📄</span>
-                        <span class="truncate">{item.label}</span>
+                        {renderMatch(item.label, autocompleteQuery(), isSelected())}
                       </div>
                       <span
                         class={`text-[10px] truncate max-w-[100px] ${

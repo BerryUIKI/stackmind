@@ -58,7 +58,7 @@ All architecture, product specifications, UI behaviors, and data flows are fully
 8. [08. Right Side Panel Functional Specification](docs/08_RIGHT_SIDE_PANEL_SPECIFICATION.md)
 9. [09. Phase 2 (P2) Product & Architectural Specification](docs/09_PHASE_2_SPECIFICATION.md)
 10. [10. Phase 3 (P3) Product & Architectural Specification](docs/10_PHASE_3_SPECIFICATION.md)
-11. [Project Milestones & Implementation Schedule (M1 – M20)](docs/MILESTONES.md)
+11. [Project Milestones & Implementation Schedule (M1 – M21)](docs/MILESTONES.md)
 
 ---
 

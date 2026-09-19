@@ -28,6 +28,7 @@ This document tracks the phased implementation milestones, acceptance criteria, 
 | **M18** | Interactive Authoring Polish, Wikilink Autocomplete & Context Menus | `v0.1.0` | ✅ Completed |
 | **M19** | Comprehensive UX & Interaction Polish (Ergonomics & Accessibility) | `v0.1.0` | ✅ Completed |
 | **M20** | External Document Export Suite (HTML, Native PDF/Print, Clean Markdown) | `v0.1.0` | ✅ Completed |
+| **M21** | Advanced Tab Navigation & Editor Substring Highlighting | `v0.1.0` | ✅ Completed |
 
 ---
 
@@ -207,3 +208,13 @@ This document tracks the phased implementation milestones, acceptance criteria, 
   - [x] **Zero-Dependency Native PDF & Print**: Hidden iframe print mechanism with `@media print` rules, margin controls, and page-break optimization invoking system print dialog.
   - [x] **Flattened Clean Markdown**: Resolves and inlines transcluded blocks (`![[...]]`) and optionally strips block anchors (`^bk-xxxx`).
   - [x] **Omni-Channel UI Invocations**: Accessible via `Cmd+E` global shortcut, TitleBar export icon button, Tab context menu, FileTree right-click menu, and `Cmd+K` command palette.
+
+### Milestone 21: Advanced Tab Navigation & Editor Substring Highlighting
+- **Status:** ✅ Completed
+- **Key Deliverables:**
+  - [x] **Keyboard-Driven Tab Ergonomics**: `Cmd+W` / `Ctrl+W` active tab close, `Cmd+Shift+[` / `Cmd+Shift+]` / `Ctrl+PageUp` / `Ctrl+PageDown` cyclic tab switching, and `Ctrl+Shift+PageUp` / `Ctrl+Shift+PageDown` / `Cmd+Alt+ArrowLeft/Right` active tab keyboard reordering.
+  - [x] **Reactive Tabs Store Extensions**: `nextTab()`, `prevTab()`, `moveActiveTabLeft()`, `moveActiveTabRight()` with 100% Vitest unit test coverage.
+  - [x] **Autocomplete Substring Highlighting**: In `SourceEditor.tsx`, live search query matches are highlighted and underlined within suggestion labels for fast visual scanning.
+  - [x] **Task Checkbox Debounce Lock & Tactile Feedback**: Micro scale-up animation and 250ms double-click lock on task list checkboxes in `MarkdownPreview.tsx` preventing race conditions.
+  - [x] **Responsive TitleBar Layout**: Overflow-safe center search trigger with flexible sizing and responsive label truncation on compact screen resolutions.
+

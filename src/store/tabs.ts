@@ -186,6 +186,44 @@ function createTabsStore() {
     setTabs(list);
   };
 
+  const nextTab = () => {
+    const list = tabs();
+    if (list.length <= 1) return;
+    const current = activeTabPath();
+    const idx = list.findIndex((t) => t.path === current);
+    const nextIdx = idx === -1 ? 0 : (idx + 1) % list.length;
+    setActiveTabPath(list[nextIdx].path);
+  };
+
+  const prevTab = () => {
+    const list = tabs();
+    if (list.length <= 1) return;
+    const current = activeTabPath();
+    const idx = list.findIndex((t) => t.path === current);
+    const prevIdx = idx === -1 ? 0 : (idx - 1 + list.length) % list.length;
+    setActiveTabPath(list[prevIdx].path);
+  };
+
+  const moveActiveTabLeft = () => {
+    const list = tabs();
+    const current = activeTabPath();
+    if (!current || list.length <= 1) return;
+    const idx = list.findIndex((t) => t.path === current);
+    if (idx > 0) {
+      reorderTabs(idx, idx - 1);
+    }
+  };
+
+  const moveActiveTabRight = () => {
+    const list = tabs();
+    const current = activeTabPath();
+    if (!current || list.length <= 1) return;
+    const idx = list.findIndex((t) => t.path === current);
+    if (idx !== -1 && idx < list.length - 1) {
+      reorderTabs(idx, idx + 1);
+    }
+  };
+
   return {
     tabs,
     activeTabPath,
@@ -197,6 +235,10 @@ function createTabsStore() {
     closeOtherTabs,
     closeTabsToRight,
     reorderTabs,
+    nextTab,
+    prevTab,
+    moveActiveTabLeft,
+    moveActiveTabRight,
     updateTabContent,
     saveActiveTab,
     updateCursorPosition,
