@@ -24,8 +24,8 @@ This document tracks the phased implementation milestones, acceptance criteria, 
 | **M14** | Daily Notes & Interactive Journaling Engine | `v1.5.0` | ✅ Completed |
 | **M15** | Templates & Snippets System | `v1.6.0` | ✅ Completed |
 | **M16** | Infinite Text-Block Spatial Canvas | `v1.7.0` | ✅ Completed |
-| **M17** | P3 Integration, Quality Verification & Release | `v2.0.0` | ✅ Completed |
 | **M18** | Interactive Authoring Polish, Wikilink Autocomplete & Context Menus | `v0.1.0` | ✅ Completed |
+| **M19** | Comprehensive UX & Interaction Polish (Ergonomics & Accessibility) | `v0.1.0` | ✅ Completed |
 
 ---
 
@@ -186,3 +186,13 @@ This document tracks the phased implementation milestones, acceptance criteria, 
   - [x] Inline `[[` Wikilink and Block Autocomplete in Source Editor with keyboard navigation (Arrow Up/Down, Enter/Tab).
   - [x] Sleek Context Menu on File Tree (Rename, Delete to Trash, Reveal in File Manager, Copy Relative Path, New Note/Folder Inside).
   - [x] Tab Context Menu (Close Others, Close to the Right, Copy Path) & HTML5 drag-and-drop tab reordering.
+
+### Milestone 19: Comprehensive UX & Interaction Polish (Ergonomics & Accessibility)
+- **Status:** ✅ Completed
+- **Key Deliverables:**
+  - [x] **TitleBar & CalendarWidget**: Enlarged hit targets (`p-1.5`), added explicit close button ("✕"), Escape key dismiss, and comprehensive `aria-label` tags.
+  - [x] **Workspace Modal**: Added Escape key & backdrop click dismissal, polished native folder picker button with focus ring and accessibility labels.
+  - [x] **SourceEditor Autocomplete**: Implemented dynamic dropdown positioning (above/below cursor depending on editor viewport height), `Ctrl+Space` manual trigger, and max-height scrolling.
+  - [x] **FileTree UX**: Added Escape key handler for context menu, and robust name validation (prohibiting slashes and preventing duplicate note collision on rename).
+  - [x] **TabStrip Ergonomics**: Added visible drag-over outline/feedback for tab reordering, full file path tooltips, Escape dismiss for tab menu, and accessibility attributes.
+  - [x] **Task List Checkbox Accessibility**: Added `aria-label="Toggle task"` and interactive pointer styling on rendered Markdown task checkboxes.

@@ -8,11 +8,18 @@ export const TabStrip: Component = () => {
 
   onMount(() => {
     const handleCloseMenu = () => setContextMenu(null);
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && contextMenu()) {
+        setContextMenu(null);
+      }
+    };
     window.addEventListener("click", handleCloseMenu);
     window.addEventListener("contextmenu", handleCloseMenu);
+    window.addEventListener("keydown", handleKeyDown);
     onCleanup(() => {
       window.removeEventListener("click", handleCloseMenu);
       window.removeEventListener("contextmenu", handleCloseMenu);
+      window.removeEventListener("keydown", handleKeyDown);
     });
   });
 
@@ -91,7 +98,13 @@ export const TabStrip: Component = () => {
                   isActive()
                     ? "bg-[var(--color-bg-secondary)] border-[var(--color-accent)] text-[var(--color-text-primary)] font-medium shadow-xs"
                     : "border-transparent text-[var(--color-text-muted)] hover:bg-[var(--color-bg-tertiary)] hover:text-[var(--color-text-secondary)]"
+                } ${
+                  draggedIndex() !== null && draggedIndex() !== idx()
+                    ? "outline-dashed outline-1 outline-indigo-400/80 bg-indigo-500/10"
+                    : ""
                 }`}
+                title={tab.path}
+                aria-label={`Tab: ${tab.title}`}
               >
                 <span class="truncate max-w-[140px]">{tab.title}</span>
 
@@ -107,6 +120,7 @@ export const TabStrip: Component = () => {
                         }}
                         class="opacity-0 group-hover:opacity-100 hover:bg-[var(--color-bg-tertiary)] p-0.5 rounded text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] transition-opacity"
                         title="Close Tab"
+                        aria-label="Close Tab"
                       >
                         <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -125,6 +139,7 @@ export const TabStrip: Component = () => {
                       }}
                       class="hidden group-hover:block hover:bg-[var(--color-bg-tertiary)] p-0.5 rounded text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)]"
                       title="Close Tab"
+                      aria-label="Close Tab"
                     >
                       <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -142,6 +157,7 @@ export const TabStrip: Component = () => {
           onClick={handleNewNote}
           class="p-1 rounded hover:bg-[var(--color-bg-tertiary)] text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] cursor-pointer transition-colors"
           title="New Note"
+          aria-label="New Note"
         >
           <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
@@ -155,7 +171,7 @@ export const TabStrip: Component = () => {
           style={{
             position: "fixed",
             left: `${Math.min(contextMenu()!.x, window.innerWidth - 180)}px`,
-            top: `${contextMenu()!.y + 5}px`,
+            top: `${Math.min(contextMenu()!.y + 5, window.innerHeight - 180)}px`,
             "z-index": 1000,
           }}
           class="w-48 bg-[var(--color-bg-secondary)] border border-[var(--color-border)] rounded-xl shadow-2xl p-1 text-xs select-none animate-in fade-in zoom-in-95 duration-75 text-[var(--color-text-primary)] font-sans"

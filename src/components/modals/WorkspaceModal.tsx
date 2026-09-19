@@ -1,4 +1,4 @@
-import { Component, For, Show, createSignal } from "solid-js";
+import { Component, For, Show, createSignal, onMount, onCleanup } from "solid-js";
 import { open as openDialog } from "@tauri-apps/plugin-dialog";
 import { uiStore } from "@/store/ui";
 import { workspaceStore } from "@/store/workspace";
@@ -6,6 +6,18 @@ import { workspaceStore } from "@/store/workspace";
 export const WorkspaceModal: Component = () => {
   const [inputPath, setInputPath] = createSignal("");
   const [inputName, setInputName] = createSignal("");
+
+  onMount(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && uiStore.workspaceModalOpen()) {
+        uiStore.setWorkspaceModalOpen(false);
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    onCleanup(() => {
+      window.removeEventListener("keydown", handleKeyDown);
+    });
+  });
 
   const handleBrowseFolder = async () => {
     try {
@@ -49,7 +61,12 @@ export const WorkspaceModal: Component = () => {
 
   return (
     <Show when={uiStore.workspaceModalOpen()}>
-      <div class="fixed inset-0 bg-black/60 backdrop-blur-xs flex items-center justify-center z-50 p-4">
+      <div
+        onClick={(e) => {
+          if (e.target === e.currentTarget) uiStore.setWorkspaceModalOpen(false);
+        }}
+        class="fixed inset-0 bg-black/60 backdrop-blur-xs flex items-center justify-center z-50 p-4"
+      >
         <div class="w-full max-w-md bg-[var(--color-bg-secondary)] border border-[var(--color-border)] rounded-xl shadow-2xl flex flex-col max-h-[85vh] overflow-hidden text-xs">
           {/* Header */}
           <div class="px-4 py-3 border-b border-[var(--color-border)] flex items-center justify-between">
@@ -59,6 +76,8 @@ export const WorkspaceModal: Component = () => {
             <button
               onClick={() => uiStore.setWorkspaceModalOpen(false)}
               class="p-1 rounded hover:bg-[var(--color-bg-tertiary)] text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] cursor-pointer"
+              title="Close (Esc)"
+              aria-label="Close Workspace Manager"
             >
               <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -147,8 +166,9 @@ export const WorkspaceModal: Component = () => {
                   <button
                     type="button"
                     onClick={handleBrowseFolder}
-                    class="px-2.5 py-1.5 rounded border border-[var(--color-border)] bg-[var(--color-bg-tertiary)] hover:bg-[var(--color-bg-hover)] text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] cursor-pointer transition-colors"
+                    class="px-2.5 py-1.5 rounded border border-[var(--color-border)] bg-[var(--color-bg-tertiary)] hover:bg-[var(--color-bg-hover)] text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] cursor-pointer transition-colors focus-visible:ring-1 focus-visible:ring-indigo-500"
                     title="Select folder from file manager"
+                    aria-label="Select folder from file manager"
                   >
                     📂
                   </button>

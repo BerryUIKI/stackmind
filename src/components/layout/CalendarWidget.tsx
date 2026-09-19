@@ -27,9 +27,17 @@ export const CalendarWidget: Component = () => {
       }
     };
 
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && isOpen()) {
+        setIsOpen(false);
+      }
+    };
+
     window.addEventListener("mousedown", handleOutsideClick);
+    window.addEventListener("keydown", handleKeyDown);
     onCleanup(() => {
       window.removeEventListener("mousedown", handleOutsideClick);
+      window.removeEventListener("keydown", handleKeyDown);
     });
   });
 
@@ -119,12 +127,13 @@ export const CalendarWidget: Component = () => {
           setIsOpen(next);
           if (next) refreshNotes();
         }}
-        class={`p-1 rounded hover:bg-[var(--color-bg-tertiary)] transition-colors cursor-pointer relative ${
+        class={`p-1.5 rounded hover:bg-[var(--color-bg-tertiary)] transition-colors cursor-pointer relative ${
           isOpen()
             ? "text-indigo-400 bg-[var(--color-bg-tertiary)]"
             : "text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)]"
         }`}
         title="Daily Notes & Calendar (Cmd+Shift+D)"
+        aria-label="Daily Notes & Calendar"
       >
         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path
@@ -135,7 +144,7 @@ export const CalendarWidget: Component = () => {
           />
         </svg>
         <Show when={hasTodayNote()}>
-          <span class="absolute top-1 right-1 w-1.5 h-1.5 rounded-full bg-indigo-500" />
+          <span class="absolute top-1.5 right-1.5 w-1.5 h-1.5 rounded-full bg-indigo-500" />
         </Show>
       </button>
 
@@ -167,8 +176,20 @@ export const CalendarWidget: Component = () => {
                 onClick={nextMonth}
                 class="w-5 h-5 rounded flex items-center justify-center hover:bg-[var(--color-bg-tertiary)] text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] transition-colors cursor-pointer font-bold"
                 title="Next Month"
+                aria-label="Next Month"
               >
                 ›
+              </button>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setIsOpen(false);
+                }}
+                class="w-5 h-5 rounded flex items-center justify-center hover:bg-[var(--color-bg-tertiary)] text-[var(--color-text-muted)] hover:text-rose-400 transition-colors cursor-pointer ml-1 text-xs"
+                title="Close Calendar (Esc)"
+                aria-label="Close Calendar"
+              >
+                ✕
               </button>
             </div>
           </div>

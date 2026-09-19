@@ -16,11 +16,18 @@ export const FileTreeNode: Component<Props> = (props) => {
 
   onMount(() => {
     const handleCloseMenu = () => setContextMenu(null);
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && contextMenu()) {
+        setContextMenu(null);
+      }
+    };
     window.addEventListener("click", handleCloseMenu);
     window.addEventListener("contextmenu", handleCloseMenu);
+    window.addEventListener("keydown", handleKeyDown);
     onCleanup(() => {
       window.removeEventListener("click", handleCloseMenu);
       window.removeEventListener("contextmenu", handleCloseMenu);
+      window.removeEventListener("keydown", handleKeyDown);
     });
   });
 
@@ -48,11 +55,23 @@ export const FileTreeNode: Component<Props> = (props) => {
     const newName = prompt("Enter new name:", baseName);
     if (!newName || newName.trim() === "" || newName.trim() === baseName) return;
 
+    const trimmed = newName.trim();
+    if (trimmed.includes("/") || trimmed.includes("\\")) {
+      alert("Name cannot contain slashes ('/' or '\\').");
+      return;
+    }
+
     const parentDir = props.node.relative_path.includes("/")
       ? props.node.relative_path.substring(0, props.node.relative_path.lastIndexOf("/"))
       : "";
-    const finalNewName = isMd ? (newName.trim().endsWith(".md") ? newName.trim() : `${newName.trim()}.md`) : newName.trim();
+    const finalNewName = isMd ? (trimmed.endsWith(".md") ? trimmed : `${trimmed}.md`) : trimmed;
     const newRelPath = parentDir ? `${parentDir}/${finalNewName}` : finalNewName;
+
+    const allNotes = workspaceStore.getAllNotePaths();
+    if (allNotes.includes(newRelPath)) {
+      alert(`An item with name "${finalNewName}" already exists.`);
+      return;
+    }
 
     try {
       await workspaceStore.renameItem(props.node.relative_path, newRelPath);

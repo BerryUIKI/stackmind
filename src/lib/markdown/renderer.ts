@@ -111,7 +111,7 @@ export async function renderMarkdownToHtml(markdown: string): Promise<string> {
   html = html.replace(/<input\s+([^>]*?)type="checkbox"([^>]*?)>/gi, (match, before, after) => {
     const isChecked = /checked/i.test(match);
     const combined = `${before} ${after}`.replace(/\s+disabled(?:=""|="true")?/gi, "");
-    return `<input type="checkbox"${combined} class="task-list-checkbox cursor-pointer accent-indigo-500 mr-1.5 align-middle" data-task-index="${taskIndex++}" ${isChecked ? "checked" : ""}>`;
+    return `<input type="checkbox"${combined} class="task-list-checkbox cursor-pointer accent-indigo-500 mr-1.5 align-middle" aria-label="Toggle task" data-task-index="${taskIndex++}" ${isChecked ? "checked" : ""}>`;
   });
 
   // 7. Convert mermaid code blocks into <div class="mermaid"> containers
