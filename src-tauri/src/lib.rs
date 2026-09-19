@@ -55,6 +55,7 @@ pub fn run() {
             commands::templates::apply_template,
             commands::canvas::read_canvas,
             commands::canvas::save_canvas,
+            commands::export::export_file,
         ])
         .run(tauri::generate_context!())
         .expect("error while running Stackmynd application");
@@ -794,5 +795,18 @@ This is about classical physics.
             after_repair.nodes[0].file,
             Some("docs/architecture_v2.md".to_string())
         );
+    }
+
+    #[test]
+    fn test_export_service_lifecycle() {
+        let temp_dir = tempfile::tempdir().unwrap();
+        let export_dest = temp_dir.path().join("exports/sample_document.html");
+        let html_content = "<!DOCTYPE html><html><head><title>Test Note</title></head><body><h1>Heading</h1></body></html>";
+
+        services::export_service::export_file_to_disk(&export_dest, html_content).unwrap();
+        assert!(export_dest.exists());
+
+        let read_back = std::fs::read_to_string(&export_dest).unwrap();
+        assert_eq!(read_back, html_content);
     }
 }

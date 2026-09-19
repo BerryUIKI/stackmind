@@ -1,5 +1,6 @@
 pub mod canvas;
 pub mod daily;
+pub mod export;
 pub mod fs;
 pub mod git;
 pub mod graph;

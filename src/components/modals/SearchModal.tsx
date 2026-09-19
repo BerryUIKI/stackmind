@@ -191,6 +191,22 @@ export const SearchModal: Component = () => {
                       </div>
                       <span class="text-[10px] text-[var(--color-text-muted)] font-mono">.canvas.json</span>
                     </div>
+
+                    <div
+                      onClick={() => {
+                        uiStore.setSearchOpen(false);
+                        uiStore.setExportModalOpen(true);
+                      }}
+                      class="p-2 rounded-lg hover:bg-[var(--color-bg-tertiary)] cursor-pointer flex items-center justify-between transition-colors"
+                    >
+                      <div class="flex items-center space-x-2">
+                        <span class="text-indigo-400">📤</span>
+                        <span class="font-medium text-[var(--color-text-primary)]">Export Document (HTML / PDF / Markdown)...</span>
+                      </div>
+                      <kbd class="px-1.5 py-0.5 rounded bg-[var(--color-bg-primary)] border border-[var(--color-border)] text-[var(--color-text-muted)] font-mono text-[10px]">
+                        ⌘E
+                      </kbd>
+                    </div>
                   </Show>
 
                   <Show when={query().trim()}>

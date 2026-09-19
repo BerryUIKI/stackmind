@@ -435,4 +435,9 @@ export async function saveCanvas(path: string, data: CanvasData): Promise<void> 
   await invoke("save_canvas", { path, data });
 }
 
+export async function exportFile(destinationPath: string, content: string): Promise<void> {
+  await invoke("export_file", { destinationPath, content });
+}
+
+
 

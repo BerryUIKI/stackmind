@@ -1,6 +1,7 @@
 import { Component, For, Show, createSignal, onMount, onCleanup } from "solid-js";
 import { tabsStore } from "@/store/tabs";
 import { workspaceStore } from "@/store/workspace";
+import { uiStore } from "@/store/ui";
 
 export const TabStrip: Component = () => {
   const [contextMenu, setContextMenu] = createSignal<{ x: number; y: number; tabPath: string } | null>(null);
@@ -205,6 +206,23 @@ export const TabStrip: Component = () => {
           >
             <span>📋</span>
             <span>Copy Note Path</span>
+          </button>
+          <div class="my-1 border-t border-[var(--color-border)]" />
+          <button
+            onClick={() => {
+              if (contextMenu()) {
+                uiStore.setExportTargetNote(contextMenu()!.tabPath);
+                uiStore.setExportModalOpen(true);
+              }
+              setContextMenu(null);
+            }}
+            class="w-full text-left px-2.5 py-1.5 rounded-md hover:bg-[var(--color-bg-tertiary)] flex items-center justify-between cursor-pointer transition-colors"
+          >
+            <div class="flex items-center space-x-2">
+              <span>📤</span>
+              <span>Export Note...</span>
+            </div>
+            <span class="text-[10px] text-[var(--color-text-muted)]">⌘E</span>
           </button>
         </div>
       </Show>
