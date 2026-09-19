@@ -17,6 +17,7 @@ import { SearchModal } from "@/components/modals/SearchModal";
 import { GlobalGraphModal } from "@/components/graph/GlobalGraphModal";
 import { GitModal } from "@/components/git/GitModal";
 import { TemplateModal } from "@/components/modals/TemplateModal";
+import { ExportModal } from "@/components/modals/ExportModal";
 import { SynchronizedEditor } from "@/components/editor/SynchronizedEditor";
 import { SpatialCanvas } from "@/components/canvas/SpatialCanvas";
 
@@ -81,6 +82,9 @@ export const App: Component = () => {
       } else if (isCmdOrCtrl && e.altKey && e.key.toLowerCase() === "n") {
         e.preventDefault();
         uiStore.setTemplateModalOpen(true);
+      } else if (isCmdOrCtrl && e.key.toLowerCase() === "e") {
+        e.preventDefault();
+        uiStore.setExportModalOpen(true);
       } else if (isCmdOrCtrl && e.key.toLowerCase() === "n") {
         e.preventDefault();
         const name = prompt("Enter note name:", "Untitled");
@@ -169,6 +173,7 @@ export const App: Component = () => {
       <GlobalGraphModal />
       <GitModal />
       <TemplateModal />
+      <ExportModal />
     </div>
   );
 };

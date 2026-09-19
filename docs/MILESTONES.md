@@ -24,8 +24,10 @@ This document tracks the phased implementation milestones, acceptance criteria, 
 | **M14** | Daily Notes & Interactive Journaling Engine | `v1.5.0` | ✅ Completed |
 | **M15** | Templates & Snippets System | `v1.6.0` | ✅ Completed |
 | **M16** | Infinite Text-Block Spatial Canvas | `v1.7.0` | ✅ Completed |
+| **M17** | P3 Integration, Quality Verification & Release | `v2.0.0` | ✅ Completed |
 | **M18** | Interactive Authoring Polish, Wikilink Autocomplete & Context Menus | `v0.1.0` | ✅ Completed |
 | **M19** | Comprehensive UX & Interaction Polish (Ergonomics & Accessibility) | `v0.1.0` | ✅ Completed |
+| **M20** | External Document Export Suite (HTML, Native PDF/Print, Clean Markdown) | `v0.1.0` | ✅ Completed |
 
 ---
 
@@ -196,3 +198,12 @@ This document tracks the phased implementation milestones, acceptance criteria, 
   - [x] **FileTree UX**: Added Escape key handler for context menu, and robust name validation (prohibiting slashes and preventing duplicate note collision on rename).
   - [x] **TabStrip Ergonomics**: Added visible drag-over outline/feedback for tab reordering, full file path tooltips, Escape dismiss for tab menu, and accessibility attributes.
   - [x] **Task List Checkbox Accessibility**: Added `aria-label="Toggle task"` and interactive pointer styling on rendered Markdown task checkboxes.
+
+### Milestone 20: External Document Export Suite (HTML, Native PDF/Print, Clean Markdown)
+- **Status:** ✅ Completed
+- **Key Deliverables:**
+  - [x] **Rust Core Export Service**: `export_service::export_file_to_disk` and `commands::export::export_file` IPC with unit testing.
+  - [x] **Standalone HTML Export**: Single-file HTML generation with embedded modern typography, KaTeX formula stylesheets, callouts, tables, and optional frontmatter metadata card.
+  - [x] **Zero-Dependency Native PDF & Print**: Hidden iframe print mechanism with `@media print` rules, margin controls, and page-break optimization invoking system print dialog.
+  - [x] **Flattened Clean Markdown**: Resolves and inlines transcluded blocks (`![[...]]`) and optionally strips block anchors (`^bk-xxxx`).
+  - [x] **Omni-Channel UI Invocations**: Accessible via `Cmd+E` global shortcut, TitleBar export icon button, Tab context menu, FileTree right-click menu, and `Cmd+K` command palette.

@@ -2,6 +2,7 @@ import { Component, For, Show, createSignal, onMount, onCleanup } from "solid-js
 import { FileNode } from "@/lib/tauri/commands";
 import { workspaceStore } from "@/store/workspace";
 import { tabsStore } from "@/store/tabs";
+import { uiStore } from "@/store/ui";
 
 interface Props {
   node: FileNode;
@@ -210,6 +211,22 @@ export const FileTreeNode: Component<Props> = (props) => {
             <span>📋</span>
             <span>Copy Relative Path</span>
           </button>
+          <Show when={!props.node.is_dir && props.node.name.endsWith(".md")}>
+            <button
+              onClick={() => {
+                uiStore.setExportTargetNote(props.node.relative_path);
+                uiStore.setExportModalOpen(true);
+                setContextMenu(null);
+              }}
+              class="w-full text-left px-2.5 py-1.5 rounded-md hover:bg-[var(--color-bg-tertiary)] flex items-center justify-between cursor-pointer transition-colors"
+            >
+              <div class="flex items-center space-x-2">
+                <span>📤</span>
+                <span>Export Note...</span>
+              </div>
+              <span class="text-[10px] text-[var(--color-text-muted)]">⌘E</span>
+            </button>
+          </Show>
           <div class="my-1 border-t border-[var(--color-border)]" />
           <button
             onClick={handleDelete}

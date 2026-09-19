@@ -21,6 +21,8 @@ function createUIStore() {
   const [graphModalOpen, setGraphModalOpen] = createSignal<boolean>(false);
   const [gitModalOpen, setGitModalOpen] = createSignal<boolean>(false);
   const [templateModalOpen, setTemplateModalOpen] = createSignal<boolean>(false);
+  const [exportModalOpen, setExportModalOpen] = createSignal<boolean>(false);
+  const [exportTargetNote, setExportTargetNote] = createSignal<string | null>(null);
 
   const toggleSidebar = () => setSidebarCollapsed(!sidebarCollapsed());
   const toggleInspector = () => setInspectorCollapsed(!inspectorCollapsed());
@@ -78,6 +80,10 @@ function createUIStore() {
     setGitModalOpen,
     templateModalOpen,
     setTemplateModalOpen,
+    exportModalOpen,
+    setExportModalOpen,
+    exportTargetNote,
+    setExportTargetNote,
   };
 }
 
