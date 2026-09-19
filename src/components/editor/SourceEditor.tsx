@@ -23,6 +23,7 @@ export const SourceEditor: Component<Props> = (props) => {
   const [autocompleteOpen, setAutocompleteOpen] = createSignal(false);
   const [autocompleteQuery, setAutocompleteQuery] = createSignal("");
   const [selectedIndex, setSelectedIndex] = createSignal(0);
+  const [dropdownPosition, setDropdownPosition] = createSignal<{ top?: number; bottom?: number; left: number }>({ left: 16, bottom: 16 });
 
   const lines = createMemo(() => {
     const count = props.content.split("\n").length;
@@ -65,6 +66,25 @@ export const SourceEditor: Component<Props> = (props) => {
       setAutocompleteQuery(query);
       setAutocompleteOpen(true);
       setSelectedIndex(0);
+
+      // Compute dynamic position based on cursor line
+      const linesBefore = textBefore.split("\n");
+      const lineIndex = linesBefore.length - 1;
+      const lineHeight = 24; // 24px per line (leading-6)
+      const topPx = (lineIndex + 1) * lineHeight - textareaRef.scrollTop + 16; // 16px is p-4
+      const editorHeight = textareaRef.clientHeight || 400;
+
+      if (topPx > editorHeight - 240) {
+        setDropdownPosition({
+          bottom: Math.max(16, editorHeight - topPx + 28),
+          left: 16,
+        });
+      } else {
+        setDropdownPosition({
+          top: Math.max(16, topPx),
+          left: 16,
+        });
+      }
     } else {
       setAutocompleteOpen(false);
     }
@@ -112,6 +132,12 @@ export const SourceEditor: Component<Props> = (props) => {
   };
 
   const handleKeyDown = (e: KeyboardEvent) => {
+    if ((e.ctrlKey || e.metaKey) && e.code === "Space") {
+      e.preventDefault();
+      checkAutocomplete();
+      return;
+    }
+
     if (autocompleteOpen() && autocompleteItems().length > 0) {
       const items = autocompleteItems();
       if (e.key === "ArrowDown") {
@@ -208,7 +234,15 @@ export const SourceEditor: Component<Props> = (props) => {
 
         {/* Floating Wikilink Autocomplete Dropdown */}
         <Show when={autocompleteOpen() && autocompleteItems().length > 0}>
-          <div class="absolute left-16 bottom-4 max-w-sm w-80 bg-[var(--color-bg-secondary)] border border-[var(--color-border)] rounded-xl shadow-2xl overflow-hidden z-40 animate-in fade-in zoom-in-95 duration-100 text-xs">
+          <div
+            style={{
+              position: "absolute",
+              left: `${dropdownPosition().left}px`,
+              top: dropdownPosition().top !== undefined ? `${dropdownPosition().top}px` : undefined,
+              bottom: dropdownPosition().bottom !== undefined ? `${dropdownPosition().bottom}px` : undefined,
+            }}
+            class="max-w-sm w-80 bg-[var(--color-bg-secondary)] border border-[var(--color-border)] rounded-xl shadow-2xl overflow-hidden z-40 animate-in fade-in zoom-in-95 duration-100 text-xs"
+          >
             <div class="px-3 py-1.5 bg-[var(--color-bg-tertiary)] border-b border-[var(--color-border)] flex items-center justify-between text-[10px] text-[var(--color-text-muted)] select-none font-sans">
               <span class="font-semibold text-indigo-400">Link Note: [[{autocompleteQuery()}]]</span>
               <span>↑↓ navigate • ↵ select • esc</span>

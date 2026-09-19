@@ -154,8 +154,9 @@ export const TitleBar: Component = () => {
         {/* Workspace Switcher Trigger */}
         <button
           onClick={() => uiStore.setWorkspaceModalOpen(true)}
-          class="flex items-center space-x-1 px-2 py-1 rounded bg-[var(--color-bg-secondary)] hover:bg-[var(--color-bg-tertiary)] border border-[var(--color-border)] text-[var(--color-text-primary)] cursor-pointer transition-colors"
+          class="flex items-center space-x-1 px-2.5 py-1 rounded bg-[var(--color-bg-secondary)] hover:bg-[var(--color-bg-tertiary)] border border-[var(--color-border)] text-[var(--color-text-primary)] cursor-pointer transition-colors"
           title="Switch or Open Workspace"
+          aria-label="Switch or Open Workspace"
         >
           <span class="truncate max-w-[130px] font-medium">
             {currentWorkspace()?.name || "No Workspace"}
@@ -168,8 +169,9 @@ export const TitleBar: Component = () => {
         {/* Sidebar Toggle Button */}
         <button
           onClick={uiStore.toggleSidebar}
-          class="p-1 rounded hover:bg-[var(--color-bg-tertiary)] text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] cursor-pointer transition-colors"
+          class="p-1.5 rounded hover:bg-[var(--color-bg-tertiary)] text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] cursor-pointer transition-colors"
           title="Toggle Sidebar (Cmd+B)"
+          aria-label="Toggle Sidebar"
         >
           <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7" />
@@ -237,8 +239,9 @@ export const TitleBar: Component = () => {
         {/* Knowledge Graph Button */}
         <button
           onClick={() => uiStore.setGraphModalOpen(true)}
-          class="p-1 rounded hover:bg-[var(--color-bg-tertiary)] text-[var(--color-text-muted)] hover:text-indigo-400 cursor-pointer transition-colors"
+          class="p-1.5 rounded hover:bg-[var(--color-bg-tertiary)] text-[var(--color-text-muted)] hover:text-indigo-400 cursor-pointer transition-colors"
           title="Open Knowledge Graph (Cmd+G)"
+          aria-label="Open Knowledge Graph"
         >
           <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
@@ -251,8 +254,9 @@ export const TitleBar: Component = () => {
         {/* Theme Toggle */}
         <button
           onClick={uiStore.toggleTheme}
-          class="p-1 rounded hover:bg-[var(--color-bg-tertiary)] text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] cursor-pointer transition-colors"
+          class="p-1.5 rounded hover:bg-[var(--color-bg-tertiary)] text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] cursor-pointer transition-colors"
           title="Toggle Light/Dark Theme"
+          aria-label="Toggle Light/Dark Theme"
         >
           <Show
             when={uiStore.theme() === "dark"}
@@ -271,8 +275,9 @@ export const TitleBar: Component = () => {
         {/* Inspector Toggle Button */}
         <button
           onClick={uiStore.toggleInspector}
-          class="p-1 rounded hover:bg-[var(--color-bg-tertiary)] text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] cursor-pointer transition-colors"
+          class="p-1.5 rounded hover:bg-[var(--color-bg-tertiary)] text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] cursor-pointer transition-colors"
           title="Toggle Inspector (Cmd+Shift+B)"
+          aria-label="Toggle Inspector"
         >
           <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
