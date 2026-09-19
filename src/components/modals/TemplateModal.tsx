@@ -1,4 +1,4 @@
-import { Component, Show, createSignal, onMount, createEffect, For } from "solid-js";
+import { Component, Show, createSignal, onMount, onCleanup, createEffect, For } from "solid-js";
 import { uiStore } from "@/store/ui";
 import { tabsStore } from "@/store/tabs";
 import { workspaceStore } from "@/store/workspace";
@@ -9,6 +9,18 @@ export const TemplateModal: Component = () => {
   const [selectedTemplate, setSelectedTemplate] = createSignal<TemplateMetadata | null>(null);
   const [searchQuery, setSearchQuery] = createSignal<string>("");
   const [newNoteTitle, setNewNoteTitle] = createSignal<string>("");
+
+  onMount(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && uiStore.templateModalOpen()) {
+        uiStore.setTemplateModalOpen(false);
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    onCleanup(() => {
+      window.removeEventListener("keydown", handleKeyDown);
+    });
+  });
 
   const refreshTemplates = async () => {
     try {

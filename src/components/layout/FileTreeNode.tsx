@@ -1,5 +1,5 @@
 import { Component, For, Show, createSignal, onMount, onCleanup } from "solid-js";
-import { FileNode } from "@/lib/tauri/commands";
+import { FileNode, showInFileManager } from "@/lib/tauri/commands";
 import { workspaceStore } from "@/store/workspace";
 import { tabsStore } from "@/store/tabs";
 import { uiStore } from "@/store/ui";
@@ -210,6 +210,16 @@ export const FileTreeNode: Component<Props> = (props) => {
           >
             <span>📋</span>
             <span>Copy Relative Path</span>
+          </button>
+          <button
+            onClick={() => {
+              showInFileManager(props.node.relative_path);
+              setContextMenu(null);
+            }}
+            class="w-full text-left px-2.5 py-1.5 rounded-md hover:bg-[var(--color-bg-tertiary)] flex items-center space-x-2 cursor-pointer transition-colors"
+          >
+            <span>📂</span>
+            <span>Reveal in File Manager</span>
           </button>
           <Show when={!props.node.is_dir && props.node.name.endsWith(".md")}>
             <button

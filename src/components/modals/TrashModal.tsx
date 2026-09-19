@@ -1,9 +1,21 @@
-import { Component, For, Show } from "solid-js";
+import { Component, For, Show, onMount, onCleanup } from "solid-js";
 import { uiStore } from "@/store/ui";
 import { workspaceStore } from "@/store/workspace";
 
 export const TrashModal: Component = () => {
   const items = () => workspaceStore.trashItems();
+
+  onMount(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && uiStore.trashModalOpen()) {
+        uiStore.setTrashModalOpen(false);
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    onCleanup(() => {
+      window.removeEventListener("keydown", handleKeyDown);
+    });
+  });
 
   const handleRestore = async (trashFilename: string, origPath: string) => {
     await workspaceStore.restoreTrashItem(trashFilename, origPath);
@@ -17,7 +29,12 @@ export const TrashModal: Component = () => {
 
   return (
     <Show when={uiStore.trashModalOpen()}>
-      <div class="fixed inset-0 bg-black/60 backdrop-blur-xs flex items-center justify-center z-50 p-4">
+      <div
+        onClick={(e) => {
+          if (e.target === e.currentTarget) uiStore.setTrashModalOpen(false);
+        }}
+        class="fixed inset-0 bg-black/60 backdrop-blur-xs flex items-center justify-center z-50 p-4 animate-in fade-in duration-100"
+      >
         <div class="w-full max-w-lg bg-[var(--color-bg-secondary)] border border-[var(--color-border)] rounded-xl shadow-2xl flex flex-col max-h-[80vh] overflow-hidden text-xs">
           {/* Header */}
           <div class="px-4 py-3 border-b border-[var(--color-border)] flex items-center justify-between">

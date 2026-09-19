@@ -113,3 +113,61 @@ pub fn empty_trash(state: State<'_, AppState>) -> Result<(), String> {
     let root = get_workspace_root(&state)?;
     fs_service::empty_trash(&root)
 }
+
+#[tauri::command]
+pub fn show_in_file_manager(
+    relative_path: Option<String>,
+    state: State<'_, AppState>,
+) -> Result<(), String> {
+    let root = get_workspace_root(&state)?;
+    let target = match relative_path {
+        Some(rel) if !rel.trim().is_empty() => fs_service::sanitize_path(&root, &rel)?,
+        _ => root,
+    };
+
+    #[cfg(target_os = "macos")]
+    {
+        if target.is_file() {
+            std::process::Command::new("open")
+                .arg("-R")
+                .arg(&target)
+                .spawn()
+                .map_err(|e| e.to_string())?;
+        } else {
+            std::process::Command::new("open")
+                .arg(&target)
+                .spawn()
+                .map_err(|e| e.to_string())?;
+        }
+    }
+
+    #[cfg(target_os = "windows")]
+    {
+        if target.is_file() {
+            std::process::Command::new("explorer")
+                .arg(format!("/select,\"{}\"", target.display()))
+                .spawn()
+                .map_err(|e| e.to_string())?;
+        } else {
+            std::process::Command::new("explorer")
+                .arg(&target)
+                .spawn()
+                .map_err(|e| e.to_string())?;
+        }
+    }
+
+    #[cfg(target_os = "linux")]
+    {
+        let parent = if target.is_file() {
+            target.parent().unwrap_or(&target)
+        } else {
+            &target
+        };
+        std::process::Command::new("xdg-open")
+            .arg(parent)
+            .spawn()
+            .map_err(|e| e.to_string())?;
+    }
+
+    Ok(())
+}
