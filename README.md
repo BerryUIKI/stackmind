@@ -30,6 +30,20 @@ Stackmynd is a high-performance, local-first knowledge management system built f
 
 ---
 
+## Key Capabilities & Architectural Features
+
+- **Tri-Mode Editor Viewport:** Seamlessly switch between Source Markdown, Live Rendered Preview (KaTeX math, Mermaid diagrams, GitHub-style alerts), and Synchronized Split View with line-proportional scrolling.
+- **Block-Level Knowledge Graph:** Deterministic `^bk-xxxx` block anchoring, bidirectional links (`[[note]]`, `[[note#^blockid]]`), and interactive 60 FPS Canvas2D force-directed physics visualizer.
+- **Embedded Git Engine:** Local-first version control providing working tree diffs, staging, commit timelines, and branch management inside the desktop shell.
+- **Block & Document Transclusion:** Dynamically embed live notes or discrete blocks with recursion guards and instant preview updates (`![[note#^bk-xxxx]]`).
+- **Infinite Text-Block Spatial Canvas:** 2D zoomable visual whiteboard surface for organizing and connecting note and block cards with directed cubic bezier arrows (`.canvas.json`).
+- **Daily Notes & Journaling:** Temporal stream-of-consciousness capture with top-right calendar navigation popover and shortcut (`Cmd+Shift+D`).
+- **Template System:** Standardized Markdown templates with dynamic date, time, and title interpolation (`Cmd+Alt+N`).
+- **External Document Export Suite:** Export any note to standalone self-contained HTML (with embedded KaTeX and typography), zero-dependency native print/PDF (`window.print()`), and clean flattened Markdown (`Cmd+E`).
+- **Native Full-Text Search:** Embedded Tantivy engine executing BM25 queries across files and discrete blocks with sub-millisecond latency (`Cmd+K`).
+
+---
+
 ## Frozen Specification Documents
 
 All architecture, product specifications, UI behaviors, and data flows are fully documented and frozen prior to engineering implementation:
@@ -42,6 +56,47 @@ All architecture, product specifications, UI behaviors, and data flows are fully
 6. [06. Multi-Workspace System Design](docs/06_MULTI_WORKSPACE_SYSTEM_DESIGN.md)
 7. [07. Search & Tag System Design](docs/07_SEARCH_AND_TAG_SYSTEM_DESIGN.md)
 8. [08. Right Side Panel Functional Specification](docs/08_RIGHT_SIDE_PANEL_SPECIFICATION.md)
+9. [09. Phase 2 (P2) Product & Architectural Specification](docs/09_PHASE_2_SPECIFICATION.md)
+10. [10. Phase 3 (P3) Product & Architectural Specification](docs/10_PHASE_3_SPECIFICATION.md)
+11. [Project Milestones & Implementation Schedule (M1 – M20)](docs/MILESTONES.md)
+
+---
+
+## Development & Build Setup
+
+### Prerequisites
+- [Node.js](https://nodejs.org/) (v18+) & [pnpm](https://pnpm.io/)
+- [Rust](https://rustup.rs/) (v1.85+ stable with 2024 edition support)
+- macOS: Xcode Command Line Tools (`xcode-select --install`)
+- Linux: `libwebkit2gtk-4.1-dev`, `build-essential`, `curl`, `wget`, `file`, `libssl-dev`, `libgtk-3-dev`
+
+### Installation & Local Run
+```bash
+# 1. Install frontend dependencies
+pnpm install
+
+# 2. Run in development mode (hot reload + Tauri window)
+pnpm tauri dev
+```
+
+### Quality Assurance & Automated Tests
+```bash
+# Run Rust unit and integration tests
+cargo test --manifest-path src-tauri/Cargo.toml
+
+# Run Rust linter and format checks
+cargo clippy --manifest-path src-tauri/Cargo.toml -- -D warnings
+cargo fmt --manifest-path src-tauri/Cargo.toml -- --check
+
+# Strict TypeScript type check
+pnpm tsc --noEmit
+
+# Frontend unit tests
+pnpm test
+
+# Production build verification
+pnpm build
+```
 
 ---
 
