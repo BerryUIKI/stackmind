@@ -30,6 +30,7 @@ pub fn run() {
             commands::fs::restore_from_trash,
             commands::fs::list_trash,
             commands::fs::empty_trash,
+            commands::fs::show_in_file_manager,
             commands::index::get_file_backlinks,
             commands::index::get_file_outlinks,
             commands::index::list_workspace_tags,
@@ -93,6 +94,20 @@ mod tests {
 
         let absolute = services::fs_service::sanitize_path(root, "/etc/passwd");
         assert!(absolute.is_err());
+    }
+
+    #[test]
+    fn test_file_manager_path_resolution() {
+        let test_dir = tempfile::tempdir().unwrap();
+        let root = test_dir.path();
+        let note_path = root.join("test_note.md");
+        fs::write(&note_path, "# Sample").unwrap();
+
+        let sanitized = services::fs_service::sanitize_path(root, "test_note.md").unwrap();
+        assert_eq!(sanitized, note_path);
+
+        let malicious = services::fs_service::sanitize_path(root, "../../sensitive_file");
+        assert!(malicious.is_err());
     }
 
     #[test]

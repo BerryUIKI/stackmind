@@ -2,6 +2,7 @@ import { Component, For, Show, createSignal, onMount, onCleanup } from "solid-js
 import { open as openDialog } from "@tauri-apps/plugin-dialog";
 import { uiStore } from "@/store/ui";
 import { workspaceStore } from "@/store/workspace";
+import { showInFileManager } from "@/lib/tauri/commands";
 
 export const WorkspaceModal: Component = () => {
   const [inputPath, setInputPath] = createSignal("");
@@ -119,11 +120,27 @@ export const WorkspaceModal: Component = () => {
                               {ws.path}
                             </span>
                           </div>
-                          <Show when={isCurrent()}>
-                            <span class="text-[10px] font-semibold text-[var(--color-accent)] shrink-0">
-                              Active
-                            </span>
-                          </Show>
+                          <div class="flex items-center space-x-2 shrink-0">
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                showInFileManager(ws.path);
+                              }}
+                              class="p-1 rounded hover:bg-[var(--color-bg-tertiary)] text-[var(--color-text-muted)] hover:text-indigo-400 cursor-pointer transition-colors"
+                              title="Reveal workspace in File Manager"
+                              aria-label="Reveal workspace in File Manager"
+                            >
+                              <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                              </svg>
+                            </button>
+                            <Show when={isCurrent()}>
+                              <span class="text-[10px] font-semibold text-[var(--color-accent)]">
+                                Active
+                              </span>
+                            </Show>
+                          </div>
                         </div>
                       );
                     }}

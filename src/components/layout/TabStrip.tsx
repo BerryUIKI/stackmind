@@ -2,6 +2,7 @@ import { Component, For, Show, createSignal, onMount, onCleanup } from "solid-js
 import { tabsStore } from "@/store/tabs";
 import { workspaceStore } from "@/store/workspace";
 import { uiStore } from "@/store/ui";
+import { showInFileManager } from "@/lib/tauri/commands";
 
 export const TabStrip: Component = () => {
   const [contextMenu, setContextMenu] = createSignal<{ x: number; y: number; tabPath: string } | null>(null);
@@ -206,6 +207,18 @@ export const TabStrip: Component = () => {
           >
             <span>📋</span>
             <span>Copy Note Path</span>
+          </button>
+          <button
+            onClick={() => {
+              if (contextMenu()) {
+                showInFileManager(contextMenu()!.tabPath);
+              }
+              setContextMenu(null);
+            }}
+            class="w-full text-left px-2.5 py-1.5 rounded-md hover:bg-[var(--color-bg-tertiary)] flex items-center space-x-2 cursor-pointer transition-colors"
+          >
+            <span>📂</span>
+            <span>Reveal in File Manager</span>
           </button>
           <div class="my-1 border-t border-[var(--color-border)]" />
           <button

@@ -29,6 +29,7 @@ This document tracks the phased implementation milestones, acceptance criteria, 
 | **M19** | Comprehensive UX & Interaction Polish (Ergonomics & Accessibility) | `v0.1.0` | ✅ Completed |
 | **M20** | External Document Export Suite (HTML, Native PDF/Print, Clean Markdown) | `v0.1.0` | ✅ Completed |
 | **M21** | Advanced Tab Navigation & Editor Substring Highlighting | `v0.1.0` | ✅ Completed |
+| **M22** | Native OS File Manager Integration & Modal Accessibility | `v0.1.0` | ✅ Completed |
 
 ---
 
@@ -217,4 +218,13 @@ This document tracks the phased implementation milestones, acceptance criteria, 
   - [x] **Autocomplete Substring Highlighting**: In `SourceEditor.tsx`, live search query matches are highlighted and underlined within suggestion labels for fast visual scanning.
   - [x] **Task Checkbox Debounce Lock & Tactile Feedback**: Micro scale-up animation and 250ms double-click lock on task list checkboxes in `MarkdownPreview.tsx` preventing race conditions.
   - [x] **Responsive TitleBar Layout**: Overflow-safe center search trigger with flexible sizing and responsive label truncation on compact screen resolutions.
+
+### Milestone 22: Native OS File Manager Integration & Modal Accessibility
+- **Status:** ✅ Completed
+- **Key Deliverables:**
+  - [x] **Cross-Platform File Manager Integration**: Rust backend command `show_in_file_manager` supporting macOS (`open -R` / `open`), Windows (`explorer.exe /select`), and Linux (`xdg-open`) with path traversal guards and unit test coverage.
+  - [x] **File Tree & Tab Strip Menus**: Added "Reveal in File Manager" action in `FileTreeNode` right-click context menu and `TabStrip` context menu.
+  - [x] **Workspace Folder Reveal**: Added direct action button in `WorkspaceModal` to reveal registered workspace root directories in the native file manager.
+  - [x] **Modal Accessibility & Dismissal**: Added `Escape` key listeners and backdrop click dismissals to `TrashModal` and `TemplateModal` for complete keyboard accessibility across all dialog surfaces.
+
 

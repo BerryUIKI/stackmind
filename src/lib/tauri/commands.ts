@@ -126,6 +126,10 @@ export async function emptyTrash(): Promise<void> {
   await invoke("empty_trash");
 }
 
+export async function showInFileManager(relativePath?: string): Promise<void> {
+  await invoke("show_in_file_manager", { relativePath });
+}
+
 export interface DbLinkRecord {
   id: number;
   source_file_id: number;
